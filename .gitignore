@@ -124,6 +124,7 @@ celerybeat.pid
 .venv
 env/
 venv/
+./Deep Learning for Time Series Forecasting/venv/
 ENV/
 env.bak/
 venv.bak/
