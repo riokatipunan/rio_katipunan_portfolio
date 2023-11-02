@@ -50,7 +50,8 @@ def excel2csv(sourcepath):
         endfilesourcepath = endfilesourcepath.replace('.xlsx','.csv')
         df.to_csv(endfilesourcepath)
         
-            
-excel2csv("E:\Python\Deep Learning for Time Series Forecasting\Data\excel")
+# run conversion
+if __name__ == "__main__":
+    excel2csv("..\Data\excel")
 
     
