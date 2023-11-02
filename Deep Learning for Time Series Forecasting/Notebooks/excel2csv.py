@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import xlrd
 
-def read_excel(filesourcepath, resample = None):
+def read_excel(filesourcepath: str, resample = None):
     
     # read the excel file using pandas
     df = pd.read_excel(filesourcepath)
@@ -38,7 +38,7 @@ def read_excel(filesourcepath, resample = None):
     
     return df
 
-def excel2csv(sourcepath):
+def excel2csv(sourcepath: str):
     for file in os.listdir(sourcepath):
         print(file)
         filesourcepath = sourcepath + '/' + file
@@ -46,7 +46,7 @@ def excel2csv(sourcepath):
         # read the excel file and output a dataframe
         df = read_excel(filesourcepath)
 
-        endfilesourcepath = "E:\Python\Deep Learning for Time Series Forecasting\Data\csv" + '/' + file
+        endfilesourcepath = "..\Data\csv" + '/' + file
         endfilesourcepath = endfilesourcepath.replace('.xlsx','.csv')
         df.to_csv(endfilesourcepath)
         
