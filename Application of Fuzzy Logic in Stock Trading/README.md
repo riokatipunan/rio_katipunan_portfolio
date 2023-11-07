@@ -40,7 +40,7 @@ The technical indicators used for this study are the following:
 
 ### Fuzzy Inference System
 
-Inference is made through the use of the Tsukamoto inference model. To do this, the outputs of the abovementioned technical indicators are fuzzified and their membership values in "small", "medium", or "high" partitions are computed. The consequent is then computed using a monotonically increaseing or decreasing function; computation of the consequent produces the corresponding values for buy, hold, or sell signals. 
+Inference is made through the use of the Tsukamoto inference model. To do this, the outputs of the abovementioned technical indicators are fuzzified and their membership values in (usually) "small", "medium", or "high" partitions are computed. The consequent is then computed using a monotonically increaseing or decreasing function; computation of the consequent produces the corresponding values for buy, hold, or sell signals. 
 
 For example, for any given value of RSI (antecedent), its membership values is computed for buy, hold, or sell (consequent). 
 
