@@ -33,6 +33,7 @@ The technical indicators used for this study are the following:
 1. Commodity Channel Index
 2. Schaff Trend Cycle
 3. Parabolic SAR
+4. MACD
 
 #### V. Other indicators
 
