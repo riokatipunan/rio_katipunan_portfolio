@@ -164,4 +164,4 @@ cython_debug/
 .DS_store
 
 # ignore large files (e.g. large datasets) from this repository
-.rio_katipunan_portfolio/Deep Learning for Time Series Forecasting/Data/household_power_consumption/
+Deep Learning for Time Series Forecasting/Data/household_power_consumption/
