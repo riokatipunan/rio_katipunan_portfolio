@@ -4,7 +4,7 @@ This project explores the use of various machine learning algorithms in stock tr
 
 1. Fuzzy Logic
 
-## Application of Fuzzy Logic in Stock Trading
+## [Application of Fuzzy Logic in Stock Trading](Notebook/Application-of-fuzzy-logic-to-stock-trading.ipynb)
 
 This project explores the application of fuzzy logic (in particular, the Tsukamoto fuzzy inference model) in stock trading. This notebook uses multiple technical indicators and consolidates them through fuzzy logic and inferes either a buy, hold, or sell signal for a particular stock (through the Tsukamoto inference model).
 
