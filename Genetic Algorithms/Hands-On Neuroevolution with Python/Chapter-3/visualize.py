@@ -87,9 +87,14 @@ def draw_net(config, genome, view=False, filename=None, directory=None, node_nam
         'height': '0.2',
         'width': '0.2'}
 
+    print('works here1')
+
     dot = graphviz.Digraph(format=fmt, node_attr=node_attrs)
 
+    print('works here2')
+
     inputs = set()
+    print(config.genome_config.input_keys)
     for k in config.genome_config.input_keys:
         inputs.add(k)
         name = node_names.get(k, str(k))
@@ -101,7 +106,6 @@ def draw_net(config, genome, view=False, filename=None, directory=None, node_nam
         outputs.add(k)
         name = node_names.get(k, str(k))
         node_attrs = {'style': 'filled', 'fillcolor': node_colors.get(k, 'lightblue')}
-
         dot.node(name, _attributes=node_attrs)
 
     if prune_unused:
