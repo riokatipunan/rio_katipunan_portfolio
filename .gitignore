@@ -167,4 +167,4 @@ cython_debug/
 Deep Learning for Time Series Forecasting/Data/household_power_consumption/
 
 # ignore the checkpoints in the genetic algorithm
-.Genetic Algorithms/Hands-On Neuroevolution with Python/Chapter-3/out/
+Genetic Algorithms/Hands-On Neuroevolution with Python/Chapter-3/out/
