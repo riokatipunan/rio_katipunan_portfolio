@@ -27,8 +27,6 @@ def roulette_wheel(population: Population, fitness_func: callable, series: pd.Da
         
     with Pool(cpu_count()) as p:
         fitness_list = p.starmap(fitness_func, func_list) 
-
-    print(list(fitness_list))
     
     return fitness_list
     
