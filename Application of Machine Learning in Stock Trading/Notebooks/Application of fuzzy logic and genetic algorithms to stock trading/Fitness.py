@@ -1,4 +1,5 @@
 from typing import Union
+import numpy as np
 import pandas as pd
 from Genome import Genome
 from fuzzy_ta import fuzzy_TA
@@ -118,7 +119,8 @@ def evaluate_fitness(series:pd.DataFrame, genome:Genome) -> list[Union[int, floa
     
     # check if sortino ratio is negative or NaN;
     # if it is negative or NaN, degenerate it into 0
-    if strat_sortino_ratio < 0 or strat_sortino_ratio is np.:
+    if strat_sortino_ratio < 0 or np.isna(strat_sortino_ratio):
+        strat_sortino_ratio = 0
         
     
     # compute for the standard deviation of the strategy
