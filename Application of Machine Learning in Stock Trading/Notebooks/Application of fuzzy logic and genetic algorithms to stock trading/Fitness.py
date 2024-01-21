@@ -119,7 +119,7 @@ def evaluate_fitness(series:pd.DataFrame, genome:Genome) -> list[Union[int, floa
     
     # check if sortino ratio is negative or NaN;
     # if it is negative or NaN, degenerate it into 0
-    if strat_sortino_ratio < 0 or np.isna(strat_sortino_ratio):
+    if strat_sortino_ratio < 0 or np.isnan(strat_sortino_ratio):
         strat_sortino_ratio = 0
         
     
