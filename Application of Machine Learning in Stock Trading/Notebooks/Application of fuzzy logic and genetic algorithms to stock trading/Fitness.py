@@ -36,7 +36,6 @@ def evaluate_fitness(series:pd.DataFrame, genome:Genome) -> list[Union[int, floa
         hi_left_node = genome.genome_dict["RSI_high_membership"].value[0],
         hi_right_node = genome.genome_dict["RSI_high_membership"].value[1]
     )
-
     
     # compute for the total value of z
     stock.z_total()
@@ -117,11 +116,19 @@ def evaluate_fitness(series:pd.DataFrame, genome:Genome) -> list[Union[int, floa
     # compute for the sortino ration of the strategy
     strat_sortino_ratio = sortino_ratio(portfolio_returns = stock.df['returns'].cumprod().iat[-1], std_downside_portfolio_returns = downside_returns_std)
     
+    # compute for max drawdown
+    max_drawdown = np.ptp(stock.df["returns"])/stock.df["returns"].max()
+
     # check if sortino ratio is negative or NaN;
     # if it is negative or NaN, degenerate it into 0
-    if strat_sortino_ratio < 0 or np.isnan(strat_sortino_ratio):
-        strat_sortino_ratio = 0
-        
+    if np.isnan(strat_sortino_ratio):
+        strat_sortino_ratio = float('-inf')
+
+    if strat_sortino_ratio < 0:
+        fitness = strat_sortino_ratio * (1/(1+num_trades)) * (1-max_drawdown)
+    
+    else:
+        fitness = strat_sortino_ratio * num_trades * max_drawdown
     
     # compute for the standard deviation of the strategy
     # return_std = stock.df['returns'].std()
