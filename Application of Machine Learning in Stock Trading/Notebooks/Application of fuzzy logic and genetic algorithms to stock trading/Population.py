@@ -23,7 +23,7 @@ class Population():
         self.population_id = next(Population.population_id)
         self.population = list()
     
-    def initialize_population(self, genome:Genome, num_genomes:int = 75):
+    def add_and_initialize_to_population(self, genome:Genome, num_genomes:int = 75):
         """
         This function initializes the first population of the genetic algorithm
         
