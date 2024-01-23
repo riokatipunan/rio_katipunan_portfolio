@@ -2,6 +2,8 @@ import copy
 from multiprocessing import Pool, cpu_count
 import pandas as pd
 from Population import Population
+from functools import reduce
+import random
 
     
 def roulette_wheel(population: Population, fitness_func: callable, series: pd.DataFrame) -> Population:
@@ -28,7 +30,33 @@ def roulette_wheel(population: Population, fitness_func: callable, series: pd.Da
     with Pool(cpu_count()) as p:
         fitness_list = p.starmap(fitness_func, func_list) 
     
-    return fitness_list
+    print(fitness_list)
+
+    lowest_fitness = 0.
+    for fitness in fitness_list:
+        if (fitness < lowest_fitness) and (fitness != float('-inf')):
+            lowest_fitness = fitness
+        
+    adjusted_fitness_list = list()
+    for idx, fitness in enumerate(fitness_list):
+        adjusted_fitness_list.append(fitness - lowest_fitness + 1)
+
+    total_fitness = 0
+    for adjusted_fitness in adjusted_fitness_list:
+        if adjusted_fitness != float('-inf'):
+            total_fitness +=  adjusted_fitness
+    
+    selection_probability = list()
+    for adjusted_fitness in adjusted_fitness_list:
+        selection_probability.append(adjusted_fitness/total_fitness)
+        
+    new_population = list()
+    for idx, _ in enumerate(selection_probability):
+        if selection_probability[idx] > random.randint(0,1):
+            new_population.append(population_list[idx])
+    print(adjusted_fitness_list)
+    print(new_population)
+    return selection_probability
     
 def rank(self):
     """
