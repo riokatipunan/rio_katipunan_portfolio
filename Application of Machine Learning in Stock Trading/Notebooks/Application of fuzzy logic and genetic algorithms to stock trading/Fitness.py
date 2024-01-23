@@ -137,8 +137,6 @@ def evaluate_fitness(series:pd.DataFrame, genome:Genome) -> list[Union[int, floa
     # compute for the sharpe ration of the strategy
     # strat_sharpe_ratio = sharpe_ratio(portfolio_returns = stock.df['returns'].cumprod()[-1], std_portfolio_returns = return_std)
     
-
-
     # compute for the total returns and plot these
     # stock.df['change'].cumprod().plot(label = 'Buy and hold')
     # stock.df['returns'].cumprod().plot(label = 'Fuzzy Logic').legend()
@@ -195,3 +193,15 @@ def sharpe_ratio(portfolio_returns:float ,std_portfolio_returns :float, risk_fre
     
     sharpe_ratio = (portfolio_returns-risk_free_rate_returns)/std_portfolio_returns
     return sharpe_ratio
+
+def _isvalid_genome(genome:Genome) -> bool:
+    """
+    This method checks if a genome is valid or not
+    
+    Arguments:
+        genome:Genome
+            the genome to be check if it is a valid genome or not
+    Returns
+        isvalid:bool
+    """
+    pass

@@ -1,6 +1,8 @@
 import copy
 import itertools
 from Genome import Genome
+from Fitness import evaluate_fitness
+from typing import Union
 
 class Population():
     """
@@ -10,7 +12,7 @@ class Population():
     population_id = itertools.count()
     
     
-    def __init__(self, genome_list:list[Genome]) -> None:
+    def __init__(self, genome_list:list[Genome] = list()) -> None:
         """
         This function initializes a gene object
         
@@ -21,9 +23,9 @@ class Population():
         Returns:
         """
         self.population_id = next(Population.population_id)
-        self.population = list()
+        self.population = genome_list
     
-    def add_and_initialize_to_population(self, genome:Genome, num_genomes:int = 75):
+    def add_and_initialize_to_population(self, base_genome:Genome, num_genomes:int = 75):
         """
         This function initializes the first population of the genetic algorithm
         
@@ -42,10 +44,10 @@ class Population():
             None
         """
         for _ in range(num_genomes):
-            genome_copy = copy.deepcopy(genome)
-            genome_copy.initialize_genome()
-            self.population.append(copy.deepcopy(genome_copy))
-        del genome_copy
+            base_genome_copy = copy.deepcopy(base_genome)
+            base_genome_copy.initialize_genome()
+            self.population.append(copy.deepcopy(base_genome_copy))
+        del base_genome_copy
             
     def seed_population(self, seed_genome:Genome, num_seeds:int = 25):
         """
@@ -79,6 +81,60 @@ class Population():
                 a list of genes selected to proceed to the next generation
         """
         pass
+    
+    def _isvalid_genome(genome:Genome) -> bool:
+        """
+        This method checks if a genome is valid or not
+        
+        Arguments:
+            genome:Genome
+                the genome to be check if it is a valid genome or not
+        Returns
+            isvalid:bool
+        """
+        
+    def __len__(self) -> int:
+        """
+        This function returns the number of genomes in the population
+        Arguments:
+            self:
+                instance of the class
+                
+        Returns:
+            num_population:
+                the number of genomes in the population
+        """
+        
+        
+        return len(self.population)
+    
+    def __str__(self):
+        """
+        This function provides information about the instance of the population
+
+        Arguments:
+            self
+                instance of the class
+
+        Returns:
+            text:str
+                a text string containing some information about the genome instance
+        """
+
+        # loop through all the genes in the genome and provide the 
+        # gene name and gene value of the gene
+        text = str()
+        text = f"Population{self.population_id} has {len(self.population)} genome/s\n"
+        text = text + "It has the following gene/s:\n"
+        for genome in self.population:
+            text = text + genome.__str__()
+            
+        return text
+        
+        
+        
+        
+        
         
         
     
