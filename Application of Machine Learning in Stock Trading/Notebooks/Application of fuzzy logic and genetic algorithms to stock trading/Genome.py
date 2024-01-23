@@ -60,13 +60,6 @@ class Genome():
         # loop through all the genes in the genome and assign them to the genome dictionary
         for gene in self.genome:
             self.genome_dict[gene.name] = gene
-            
-    def eval_fitness(self, fitness_func:callable) -> float:
-        """
-        Some text
-        """
-        self.fitness = fitness_func(genome = self)
-        return self.fitness
 
     def __str__(self) -> str:
         """
