@@ -53,8 +53,8 @@ def evaluate_fitness(series:pd.DataFrame, genome:Genome) -> list[Union[int, floa
     plt.show()
 
     # initialize the following variables
-    stock.df['trailingstop'] = 0
-    stock.df['returns'] = 1
+    stock.df['trailingstop'] = 0.
+    stock.df['returns'] = 1.0
     stock.df['change'] = stock.df['Close'].pct_change()+1
     stock.df['regime'] = 0
     has_long_position = False
@@ -65,12 +65,12 @@ def evaluate_fitness(series:pd.DataFrame, genome:Genome) -> list[Union[int, floa
     
     for i in range(0, len(stock.df)-1):
         # check condition for entry
-        condition1 = stock.df['z_sum_rolling'][i] >= genome.genome_dict["entry_condition"].value[1]
+        condition1 = stock.df['z_sum_rolling'].iat[i] >= genome.genome_dict["entry_condition"].value[1]
         condition2 = has_long_position is False
-        condition3 = stock.df['regime'][i] != -1
+        condition3 = stock.df['regime'].iat[i] != -1
         if condition1 and condition2 and condition3:
             # buy stock in the next day
-            stock.df['regime'][i+1] = 1
+            stock.df['regime'].iat[i+1] = 1
             has_long_position = True
             num_trades += 1
             buy_locator.append(stock.df.iloc[i])
@@ -79,33 +79,33 @@ def evaluate_fitness(series:pd.DataFrame, genome:Genome) -> list[Union[int, floa
             
         # establish trailing stop
         if has_long_position is True:
-            trailingstop *= stock.df['change'][i]
+            trailingstop *= stock.df['change'].iat[i]
                 
         # check conditions for exit
-        condition1 = stock.df['z_sum_rolling'][i] < genome.genome_dict["entry_condition"].value[0]
+        condition1 = stock.df['z_sum_rolling'].iat[i] < genome.genome_dict["entry_condition"].value[0]
         condition2 = trailingstop < genome.genome_dict["stop_loss"].value
         condition3 = has_long_position is True
         if( (condition1) or (condition2) ) and condition3:
-            stock.df['regime'][i+1] = -1
+            stock.df['regime'].iat[i+1] = -1
             has_long_position = False
             sell_locator.append(stock.df.iloc[i])
             trailingstop = 1
 
     # put 1 between 1 and -1 
     for i in range(1, len(stock.df)):
-        if stock.df['regime'][i-1] == 1 and stock.df['regime'][i] == 0:
-            stock.df['regime'][i] = 1
+        if stock.df['regime'].iat[i-1] == 1 and stock.df['regime'].iat[i] == 0:
+            stock.df['regime'].iat[i] = 1
 
     # compute returns
     for i in range(0, len(stock.df)):
-        if stock.df['regime'][i] != 0:
-            stock.df['returns'][i] = stock.df['change'][i]
+        if stock.df['regime'].iat[i] != 0:
+            stock.df['returns'].iat[i] = stock.df['change'].iat[i]
     
     # get returns for buy and hold strategy
-    bnh_returns = stock.df['change'].cumprod()[-1]
+    bnh_returns = stock.df['change'].cumprod().iat[-1]
     
     # get the returns of the strategy
-    strat_returns = stock.df['returns'].cumprod()[-1]
+    strat_returns = stock.df['returns'].cumprod().iat[-1]
     
     # get the downside returns
     downside_returns_df = None
@@ -115,7 +115,7 @@ def evaluate_fitness(series:pd.DataFrame, genome:Genome) -> list[Union[int, floa
     downside_returns_std = downside_returns_df['returns'].std()
 
     # compute for the sortino ration of the strategy
-    strat_sortino_ratio = sortino_ratio(portfolio_returns = stock.df['returns'].cumprod()[-1], std_downside_portfolio_returns = downside_returns_std)
+    strat_sortino_ratio = sortino_ratio(portfolio_returns = stock.df['returns'].cumprod().iat[-1], std_downside_portfolio_returns = downside_returns_std)
     
     # check if sortino ratio is negative or NaN;
     # if it is negative or NaN, degenerate it into 0
