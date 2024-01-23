@@ -15,10 +15,10 @@ class fuzzy_TA:
         """
         
         self.df = df
-        self.u = pd.DataFrame(index = self.df.index)
-        self.z = pd.DataFrame(index = self.df.index)
-        self.u_sum = pd.DataFrame(index = self.df.index)
-        self.z_sum = pd.DataFrame(index = self.df.index)
+        self.u = pd.DataFrame(index = self.df.index).astype(np.float64)
+        self.z = pd.DataFrame(index = self.df.index).astype(np.float64)
+        self.u_sum = pd.DataFrame(index = self.df.index).astype(np.float64)
+        self.z_sum = pd.DataFrame(index = self.df.index).astype(np.float64)
     # MOMENTUM INDICATORS
     
     def RSI(self, 
@@ -1109,7 +1109,7 @@ class fuzzy_TA:
         self.u_sum['sum'] = self.u.sum(axis = 1)
         
         # initialize z_sum to be 0
-        self.z['z_sum'] = 0
+        self.z['z_sum'] = 0.
         
         # add all values of z across different technical indicator
         for col_name in self.u.columns:
