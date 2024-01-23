@@ -10,7 +10,7 @@ class Population():
     population_id = itertools.count()
     
     
-    def __init__(self):
+    def __init__(self, genome_list:list[Genome]) -> None:
         """
         This function initializes a gene object
         
