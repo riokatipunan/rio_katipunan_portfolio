@@ -33,7 +33,7 @@ def run(train_set:list[pd.DataFrame], base_genome:Genome, seed_genome:Genome, fi
     population = Population()
     population.seed_population(seed_genome = SEED_GENOME, num_seeds = 25)
     population.add_and_initialize_to_population(base_genome = BASE_GENOME, num_genomes = 75)
-    new_population = None
+    new_population = Population()
     for generation in range(num_generations):
         selection_choices = ["RWS", "SUS", "tournament", "rank"]
         selection_operator = random.choice(selection_choices)
@@ -55,7 +55,7 @@ def run(train_set:list[pd.DataFrame], base_genome:Genome, seed_genome:Genome, fi
             new_population = crossover(population=new_population)
         
         population = new_population
-        print(type(population))
+        print(population)
         # set checkpoints in the evolition
         if generation % checkpoint_interval == 0:
             set_checkpoint(population)        
