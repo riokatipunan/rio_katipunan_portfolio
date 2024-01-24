@@ -1,6 +1,7 @@
 import copy
 import itertools
 from Genome import Genome
+from typing import Union
 
 class Population():
     """
@@ -10,7 +11,7 @@ class Population():
     population_id = itertools.count()
     
     
-    def __init__(self, genome_list:list[Genome] | None = None) -> None:
+    def __init__(self, genome_list:Union[list[Genome], None] = None) -> None:
         """
         This function initializes a gene object
         

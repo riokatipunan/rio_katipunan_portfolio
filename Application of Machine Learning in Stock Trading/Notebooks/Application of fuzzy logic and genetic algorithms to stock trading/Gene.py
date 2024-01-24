@@ -72,8 +72,8 @@ class Gene():
         if probability_of_mutation <=  mutation_rate:
             mutation_type_choices = ["uniform", "normal"]
             mutation_type = random.choice(mutation_type_choices)
-            print(f"Gene {self.gene_id} with gene name: {self.name} is being mutated")
-            print(f"Mutation type is {mutation_type}")
+            # print(f"Gene {self.gene_id} with gene name: {self.name} is being mutated")
+            # print(f"Mutation type is {mutation_type}")
             if mutation_type is "uniform":
                 self.initialize_gene()
 
@@ -156,7 +156,7 @@ class Gene():
                         self.value = [short_condition, long_condition]
                         condition1 = short_condition > self.lower_bound and short_condition < self.upper_bound
                         condition2 = long_condition > self.lower_bound and long_condition < self.upper_bound
-                        condition3 = left_node < right_node
+                        condition3 = short_condition < long_condition
                         if condition1 and condition2 and condition3:
                             break
                         # if the above code takes too long, 

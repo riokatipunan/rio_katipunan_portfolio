@@ -3,6 +3,7 @@ import random
 import copy
 from Gene import Gene
 from Genome import Genome
+from Population import Population
 
 def single_point(genome1:Genome, genome2:Genome) -> (Genome, Genome):
     """
@@ -34,7 +35,8 @@ def single_point(genome1:Genome, genome2:Genome) -> (Genome, Genome):
     
     offspring1 = Genome(offspring1)
     offspring2 = Genome(offspring2)
-    
+    offspring1.mutate()
+    offspring2.mutate()
     return offspring1, offspring2
 
 def two_point(genome1:Genome, genome2:Genome) -> (Genome, Genome):
@@ -106,7 +108,8 @@ def uniform(genome1:Genome, genome2:Genome) -> Genome:
     
     offspring1 = Genome(offspring1)
     offspring2 = Genome(offspring2)
-    
+    offspring1.mutate()
+    offspring2.mutate()
     return offspring1, offspring2
     
 def linear(genome1:Genome, genome2:Genome) -> Genome:
@@ -313,6 +316,7 @@ def linear(genome1:Genome, genome2:Genome) -> Genome:
             continue
     
     offspring = Genome(offspring)
+    offspring.mutate()
     return offspring
     
 def SBX(genome1:Genome, genome2:Genome) -> (Genome, Genome):
@@ -693,4 +697,44 @@ def SBX(genome1:Genome, genome2:Genome) -> (Genome, Genome):
     
     offspring1 = Genome(offspring1)
     offspring2 = Genome(offspring2)
+    offspring1.mutate()
+    offspring2.mutate()
     return offspring1, offspring2
+
+def crossover(population:Population, num_crossover:int =  25) -> Population:
+    """
+    
+    """
+    new_population = list()
+    population_list = population.population
+    CROSSOVER_OPERATORS = ["single_point", "two_point", "uniform", "SBX"]
+    
+    for i in range(num_crossover):
+        parent1_idx = random.randint(0, len(population.population)-1)
+        parent2_idx = random.randint(0, len(population.population)-1)
+        
+        crossover_type = random.choice(CROSSOVER_OPERATORS)
+        
+        if crossover_type == "single_point":
+            offspring1, offspring2 = single_point(population.population[parent1_idx], population.population[parent2_idx])
+        
+        if crossover_type == "two_point":
+            offspring1, offspring2 = two_point(population.population[parent1_idx], population.population[parent2_idx])
+        
+        if crossover_type == "uniform":
+            offspring1, offspring2 = uniform(population.population[parent1_idx], population.population[parent2_idx])
+
+        if crossover_type == "SBX":
+            offspring1, offspring2 = SBX(population.population[parent1_idx], population.population[parent2_idx])
+    
+        new_population.append(offspring1)
+        new_population.append(offspring2)
+    
+    population_list.extend(new_population)
+    
+    new_population = Population(population_list)
+    
+    return new_population
+    
+    
+    

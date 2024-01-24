@@ -1,6 +1,5 @@
 from Gene import Gene
 
-
 def base_genome() -> list[Gene]:
     """
     This function creates the base genome to be used in the algorithm

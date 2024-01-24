@@ -60,7 +60,24 @@ class Genome():
         # loop through all the genes in the genome and assign them to the genome dictionary
         for gene in self.genome:
             self.genome_dict[gene.name] = gene
-
+            
+    def mutate(self) -> None:
+        """
+        This function mutates the genome
+        
+        Arguments:
+            None
+        
+        Returns:
+            None
+        """
+        # attempt to mutate all genes in the genome
+        for gene in self.genome:
+            gene.mutate()
+        
+        # updated the genome if there have been mutated genes
+        self.update_genome_dict()  
+        
     def __str__(self) -> str:
         """
         This function provides information about the instance of the genome
