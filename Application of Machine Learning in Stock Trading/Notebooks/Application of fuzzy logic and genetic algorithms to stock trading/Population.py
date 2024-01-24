@@ -1,8 +1,6 @@
 import copy
 import itertools
 from Genome import Genome
-from Fitness import evaluate_fitness
-from typing import Union
 
 class Population():
     """
@@ -12,7 +10,7 @@ class Population():
     population_id = itertools.count()
     
     
-    def __init__(self, genome_list:list[Genome] = list()) -> None:
+    def __init__(self, genome_list:list[Genome] | None = None) -> None:
         """
         This function initializes a gene object
         
@@ -23,7 +21,10 @@ class Population():
         Returns:
         """
         self.population_id = next(Population.population_id)
-        self.population = genome_list
+        if genome_list is not None and len(genome_list) > 0:
+            self.population = genome_list
+        else:
+            self.population = list()
     
     def add_and_initialize_to_population(self, base_genome:Genome, num_genomes:int = 75):
         """
@@ -44,7 +45,7 @@ class Population():
             None
         """
         for _ in range(num_genomes):
-            base_genome_copy = copy.deepcopy(base_genome)
+            base_genome_copy = Genome(base_genome.genome)
             base_genome_copy.initialize_genome()
             self.population.append(copy.deepcopy(base_genome_copy))
         del base_genome_copy
@@ -65,9 +66,9 @@ class Population():
         
         """
         for _ in range(num_seeds):
-            self.population.append(copy.deepcopy(seed_genome))
+            seed_genome_copy = Genome(seed_genome.genome)
+            self.population.append(copy.deepcopy(seed_genome_copy))
 
-    
     def select_genes(self):
         """
         This function is the selection phase of the genetic algorithm

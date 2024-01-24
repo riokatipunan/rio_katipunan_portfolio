@@ -82,3 +82,6 @@ class Genome():
             text = text + gene.__str__()
             
         return text
+    
+    def __len__(self):
+        return len(self.genome)

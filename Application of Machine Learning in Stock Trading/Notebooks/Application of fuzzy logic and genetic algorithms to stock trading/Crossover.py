@@ -94,16 +94,20 @@ def uniform(genome1:Genome, genome2:Genome) -> Genome:
         offspring: Genome
             the offspring due to the crossover of gene1 and gene2;
     """
-    offspring = list()
+    offspring1 = list()
+    offspring2 = list()
     for i in range(len(genome1.genome)):
         if random.uniform(0,1) >=0.5:
-            offspring.append(copy.deepcopy(genome1.genome[i]))
+            offspring1.append(copy.deepcopy(genome1.genome[i]))
+            offspring2.append(copy.deepcopy(genome2.genome[i]))
         else:
-            offspring.append(copy.deepcopy(genome2.genome[i]))
+            offspring1.append(copy.deepcopy(genome2.genome[i]))
+            offspring2.append(copy.deepcopy(genome1.genome[i]))
     
-    offspring = Genome(offspring)
+    offspring1 = Genome(offspring1)
+    offspring2 = Genome(offspring2)
     
-    return offspring
+    return offspring1, offspring2
     
 def linear(genome1:Genome, genome2:Genome) -> Genome:
     """
