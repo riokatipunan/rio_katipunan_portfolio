@@ -124,7 +124,7 @@ class Population():
         # loop through all the genes in the genome and provide the 
         # gene name and gene value of the gene
         text = str()
-        text = f"Population{self.population_id} has {len(self.population)} genome/s\n"
+        text = f"Population {self.population_id} has {len(self.population)} genome/s\n"
         text = text + "It has the following gene/s:\n"
         for genome in self.population:
             text = text + genome.__str__()
