@@ -9,7 +9,7 @@ import pandas as pd
 import os
 import pickle
 
-def run(train_set:list[pd.DataFrame], base_genome:Genome, seed_genome:Genome, fitness_func:callable, num_generations:int = 100, checkpoint_interval:int = 10) -> None:
+def run(train_set:list[pd.DataFrame], base_genome:Genome, seed_genome:Genome, fitness_func:callable, num_generations:int = 100, checkpoint_interval:int = 5) -> None:
     """
     This function simulates evolution through the population
     of genes
@@ -39,28 +39,28 @@ def run(train_set:list[pd.DataFrame], base_genome:Genome, seed_genome:Genome, fi
         selection_operator = random.choice(selection_choices)
         
         if selection_operator == "RWS":
-            new_population = RWS(population = population, fitness_func = fitness_func, series = train_set[random.randint(1, len(train_set))])
+            new_population, average_fitness = RWS(population = population, fitness_func = fitness_func, series = train_set[random.randint(1, len(train_set))])
             new_population = crossover(population=new_population)
             
         if selection_operator == "SUS":
-            new_population = SUS(population = population, fitness_func = fitness_func, series = train_set[random.randint(1, len(train_set))])
+            new_population, average_fitness = SUS(population = population, fitness_func = fitness_func, series = train_set[random.randint(1, len(train_set))])
             new_population = crossover(population=new_population)
             
-        if selection_operator == "SUS":
-            new_population = tournament(population = population, fitness_func = fitness_func, series = train_set[random.randint(1, len(train_set))])
+        if selection_operator == "tournament":
+            new_population, average_fitness = tournament(population = population, fitness_func = fitness_func, series = train_set[random.randint(1, len(train_set))])
             new_population = crossover(population=new_population)
             
-        if selection_operator == "SUS":
-            new_population = rank(population = population, fitness_func = fitness_func, series = train_set[random.randint(1, len(train_set))])
+        if selection_operator == "rank":
+            new_population, average_fitness = rank(population = population, fitness_func = fitness_func, series = train_set[random.randint(1, len(train_set))])
             new_population = crossover(population=new_population)
         
         population = new_population
-        print(population)
+        print(average_fitness)
         # set checkpoints in the evolition
         if generation % checkpoint_interval == 0:
             set_checkpoint(population)        
     return population
-    # TODO: include checkpoints here
+    
     
 def set_checkpoint(population:Population):
     """
@@ -72,8 +72,11 @@ def set_checkpoint(population:Population):
         pickle.dump(population, output, pickle.HIGHEST_PROTOCOL)
     
     
-def load_checkpoint():
+def load_checkpoint(checkpoint_path:str, train_set:list[pd.DataFrame], base_genome:Genome, seed_genome:Genome, fitness_func:callable, num_generations:int = 100, checkpoint_interval:int = 5):
     """
     Some text
     """
-    pass
+    with open(checkpoint_path, 'rb') as input:
+        population = pickle.load(input)
+
+    # population = run(train_set, base_genome, seed_genome, fitness_func, num_generations, checkpoint_interval)

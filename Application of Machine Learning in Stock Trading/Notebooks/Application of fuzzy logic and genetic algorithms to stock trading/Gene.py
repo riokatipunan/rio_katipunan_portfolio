@@ -2,6 +2,7 @@ from typing import Union
 import itertools
 import random
 import numpy as np
+import math
 
 class Gene():
     """
@@ -83,7 +84,7 @@ class Gene():
                     loop_counter = 0
                     while True:
                         loop_counter += 1
-                        self.value = np.random.normal(loc = self.value)
+                        self.value = math.ceil(np.random.normal(loc = self.value))
                         if self.value > self.lower_bound and self.value < self.upper_bound:
                             break
 

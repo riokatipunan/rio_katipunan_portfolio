@@ -51,6 +51,8 @@ def roulette_wheel(population: Population, fitness_func: callable, series: pd.Da
     for adjusted_fitness in adjusted_fitness_list:
         if adjusted_fitness != float('-inf'):
             total_fitness +=  adjusted_fitness
+
+    average_fitness = total_fitness/len(adjusted_fitness_list)
     
     # compute for the selection probability of an individual 
     # based on the total fitness of the population
@@ -69,7 +71,7 @@ def roulette_wheel(population: Population, fitness_func: callable, series: pd.Da
     if len(new_population) > num_population:
         new_population = new_population[0:100]
     
-    return new_population
+    return new_population, average_fitness
 
 def RWS(population: Population, fitness_func: callable, series: pd.DataFrame, num_population:int = 100, num_new_population = 50) -> Population:
     """
@@ -124,6 +126,8 @@ def RWS(population: Population, fitness_func: callable, series: pd.DataFrame, nu
         if adjusted_fitness != float('-inf'):
             total_fitness +=  adjusted_fitness
     
+    average_fitness = total_fitness/len(adjusted_fitness_list)
+
     # compute for the selection probability of an individual 
     # based on the total fitness of the population
     selection_probability_list = list()
@@ -144,7 +148,7 @@ def RWS(population: Population, fitness_func: callable, series: pd.DataFrame, nu
 
     new_population = Population(new_population_list)
 
-    return new_population
+    return new_population, average_fitness
 
 def rank(population: Population, fitness_func: callable, series: pd.DataFrame, num_population:int = 100, num_new_population = 50) -> Population:
     """
@@ -194,6 +198,14 @@ def rank(population: Population, fitness_func: callable, series: pd.DataFrame, n
     for idx, fitness in enumerate(valid_fitness_list):
         adjusted_fitness_list.append(fitness - lowest_fitness + 1)
 
+    # compute for the total fitness of the population
+    total_fitness = 0
+    for adjusted_fitness in adjusted_fitness_list:
+        if adjusted_fitness != float('-inf'):
+            total_fitness +=  adjusted_fitness
+    
+    average_fitness = total_fitness/len(adjusted_fitness_list)    
+
     # sort the list of genomes
     temp_fitness_value = 0
     temp_genome = None
@@ -237,7 +249,7 @@ def rank(population: Population, fitness_func: callable, series: pd.DataFrame, n
 
     new_population = Population(new_population_list)
 
-    return new_population
+    return new_population, average_fitness
     
 def tournament(population: Population, fitness_func: callable, series: pd.DataFrame, num_population:int = 100, num_new_population = 50) -> Population:
     """
@@ -291,7 +303,9 @@ def tournament(population: Population, fitness_func: callable, series: pd.DataFr
     for adjusted_fitness in adjusted_fitness_list:
         if adjusted_fitness != float('-inf'):
             total_fitness +=  adjusted_fitness
-    
+
+    average_fitness = total_fitness/len(adjusted_fitness_list)    
+
     # select the genomes for the new population
     for i in range(num_new_population):
         idx_a = random.randint(0, len(adjusted_fitness_list)-1)
@@ -304,7 +318,7 @@ def tournament(population: Population, fitness_func: callable, series: pd.DataFr
 
     new_population = Population(new_population_list)
 
-    return new_population    
+    return new_population, average_fitness
     
 def elitist(self):
     """
@@ -360,7 +374,6 @@ def SUS(population: Population, fitness_func: callable, series: pd.DataFrame, nu
             valid_fitness_list.append(fitness)
             valid_genome_list.append(genome_list[idx])
 
-    print(len(valid_genome_list))
     # get the lowest fitness value in the population
     lowest_fitness = 0.
     for fitness in valid_fitness_list:
@@ -378,6 +391,8 @@ def SUS(population: Population, fitness_func: callable, series: pd.DataFrame, nu
         if adjusted_fitness != float('-inf'):
             total_fitness +=  adjusted_fitness
     
+    average_fitness = total_fitness/len(adjusted_fitness_list)    
+
     # compute for the selection probability of an individual 
     # based on the total fitness of the population
     selection_probability_list = list()
@@ -401,4 +416,4 @@ def SUS(population: Population, fitness_func: callable, series: pd.DataFrame, nu
 
     new_population = Population(new_population_list)
 
-    return new_population
+    return new_population, average_fitness

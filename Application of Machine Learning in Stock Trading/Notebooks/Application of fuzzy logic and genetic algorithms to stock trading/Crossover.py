@@ -558,7 +558,7 @@ def SBX(genome1:Genome, genome2:Genome) -> (Genome, Genome):
                 condition2 = (genome1.genome[i].lower_bound < offspring1_left_node_value) and (genome1.genome[i].upper_bound > offspring1_left_node_value)
                 condition3 = (genome1.genome[i].lower_bound < offspring1_middle_node_value) and (genome1.genome[i].upper_bound > offspring1_middle_node_value)
                 condition4 = (genome1.genome[i].lower_bound < offspring1_right_node_value) and (genome1.genome[i].upper_bound > offspring1_right_node_value) 
-                condition5 = (offspring2_left_node_value < offspring2_middle_node_value) and (offspring1_middle_node_value < offspring2_right_node_value) 
+                condition5 = (offspring2_left_node_value < offspring2_middle_node_value) and (offspring2_middle_node_value < offspring2_right_node_value) 
                 condition6 = (genome1.genome[i].lower_bound < offspring2_left_node_value) and (genome1.genome[i].upper_bound > offspring2_left_node_value)
                 condition7 = (genome1.genome[i].lower_bound < offspring2_middle_node_value) and (genome1.genome[i].upper_bound > offspring2_middle_node_value)
                 condition8 = (genome1.genome[i].lower_bound < offspring2_right_node_value) and (genome1.genome[i].upper_bound > offspring2_right_node_value)                    
