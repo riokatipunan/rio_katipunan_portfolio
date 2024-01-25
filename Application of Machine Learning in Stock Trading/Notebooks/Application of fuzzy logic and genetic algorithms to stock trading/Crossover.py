@@ -12,19 +12,24 @@ def single_point(genome1:Genome, genome2:Genome) -> (Genome, Genome):
     
     Arguments:
         genome1: Genome
-            a genome object to be crossed over to gene2
+            a genome object to be crossed over to genome2
         
         genome2: Genome
-            a genome object to be crossed over to gene 1
+            a genome object to be crossed over to genome1
             
     Returns:
         offspring1, offspring2: Genome, Genome
-            the offspring due to the crossover of gene1 and gene2;
+            the offspring due to the crossover of genome1 and genome2;
     """
     
+    # initialize the offspring
     offspring1 = list()
     offspring2 = list()
+    
+    # identify the crossover point
     crossover_point = random.randint(1, len(genome1.genome)-1)
+    
+    # at the crossoverpoint, swap the genes of the two parent genomes
     for i in range(len(genome1.genome)):
         if i < crossover_point:
             offspring1.append(copy.deepcopy(genome1.genome[i]))
@@ -33,10 +38,14 @@ def single_point(genome1:Genome, genome2:Genome) -> (Genome, Genome):
             offspring1.append(copy.deepcopy(genome2.genome[i]))
             offspring2.append(copy.deepcopy(genome1.genome[i]))
     
+    # instantiate the offsprings as genomes
     offspring1 = Genome(offspring1)
     offspring2 = Genome(offspring2)
+    
+    # apply mutation to the offsprings
     offspring1.mutate()
     offspring2.mutate()
+    
     return offspring1, offspring2
 
 def two_point(genome1:Genome, genome2:Genome) -> (Genome, Genome):
@@ -46,24 +55,30 @@ def two_point(genome1:Genome, genome2:Genome) -> (Genome, Genome):
     
     Arguments:
         genome1: Genome
-            a genome object to be crossed over to gene2
+            a genome object to be crossed over to genome2
         
         genome2: Genome
-            a genome object to be crossed over to gene 1
+            a genome object to be crossed over to genome1
             
     Returns:
         offspring1, offspring2: Genome, Genome
-            the offspring due to the crossover of gene1 and gene2;
+            the offspring due to the crossover of genome1 and genome2
     """
+    # instantiate the offsprings as lists
     offspring1 = list()
     offspring2 = list()
     
-    crossover_point1 = random.randint(1, len(genome1.genome)-1)
-    crossover_point2 = random.randint(1, len(genome1.genome)-1)
-    
-    while crossover_point1 >= crossover_point2:
+    # identify the two crossoverpoints
+    #  the code below checks and ensures that the first crossover point
+    # is less than the second crossoverpoint
+    while True:
         crossover_point1 = random.randint(1, len(genome1.genome)-1)
         crossover_point2 = random.randint(1, len(genome1.genome)-1)
+        
+        if crossover_point1 < crossover_point2:
+            break
+    
+    # do the two-point crossover
     for i in range(len(genome1.genome)):
         if i < crossover_point1:
             offspring1.append(copy.deepcopy(genome1.genome[i]))
@@ -75,29 +90,33 @@ def two_point(genome1:Genome, genome2:Genome) -> (Genome, Genome):
             offspring1.append(copy.deepcopy(genome1.genome[i]))
             offspring2.append(copy.deepcopy(genome2.genome[i]))
     
+    # instantiate the offspring as a genome
     offspring1 = Genome(offspring1)
     offspring2 = Genome(offspring2)
     
     return offspring1, offspring2
     
-def uniform(genome1:Genome, genome2:Genome) -> Genome:
+def uniform(genome1:Genome, genome2:Genome) -> (Genome, Genome):
     """
     This function performs a uniform crossover between two genomes; 
     this function returns two offsprings.
     
     Arguments:
         genome1: Genome
-            a genome object to be crossed over to gene2
+            a genome object to be crossed over to genome2
         
         genome2: Genome
-            a genome object to be crossed over to gene 1
+            a genome object to be crossed over to genome1
             
     Returns:
         offspring: Genome
-            the offspring due to the crossover of gene1 and gene2;
+            the offspring due to the crossover of genome1 and genome2;
     """
+    # instantiate the offsprings as a list
     offspring1 = list()
     offspring2 = list()
+    
+    # do uniform crossover
     for i in range(len(genome1.genome)):
         if random.uniform(0,1) >=0.5:
             offspring1.append(copy.deepcopy(genome1.genome[i]))
@@ -106,10 +125,14 @@ def uniform(genome1:Genome, genome2:Genome) -> Genome:
             offspring1.append(copy.deepcopy(genome2.genome[i]))
             offspring2.append(copy.deepcopy(genome1.genome[i]))
     
+    # instatiate the offsprings as genomes
     offspring1 = Genome(offspring1)
     offspring2 = Genome(offspring2)
+
+    # apply mutation to the offsprings
     offspring1.mutate()
     offspring2.mutate()
+    
     return offspring1, offspring2
     
 def linear(genome1:Genome, genome2:Genome) -> Genome:
@@ -119,20 +142,27 @@ def linear(genome1:Genome, genome2:Genome) -> Genome:
     
     Arguments:
         genome1: Genome
-            a genome object to be crossed over to gene2
+            a genome object to be crossed over to genome2
         
         genome2: Genome
-            a genome object to be crossed over to gene 1
+            a genome object to be crossed over to genome1
             
     Returns:
         offspring: Genome
-            the offspring due to the crossover of gene1 and gene2;
+            the offspring due to the crossover of genome1 and genome2;
     """
+    # instantiate the offspring as a list
     offspring = list()
+    
+    # loop through the genome of the parents and do linear crossover
     for i in range(len(genome1.genome)):
+        
+        # determine the scaling factors for the linear crossover
         alpha = random.uniform(0,1)
         beta = random.uniform(0,1)
         
+        # the next block of code checks the types of genes in the genome 
+        # and applies the appropriate crossover operation
         if genome1.genome[i].type is "int":
             # check that both genes are the same in terms of type and name
             assert genome1.genome[i].name == genome2.genome[i].name, "The name genes of the genome should be the same"
@@ -176,19 +206,23 @@ def linear(genome1:Genome, genome2:Genome) -> Genome:
             assert genome1.genome[i].name == genome2.genome[i].name, "The name genes of the genome should be the same"
             assert genome1.genome[i].type == genome2.genome[i].type, "The type genes of the genome should be the same"  
             
-            
-            # loop until offspring left node is less than the offspring right node
+            # instantiate the left and right nodes of the offspring
             offspring_left_node = 0
             offspring_right_node = 0
+
+            # initialize loop counter
             loop_counter = 0
+            
+            # loop until offspring left node is less than the offspring right node
             while True:
+                # increase the loop counter
                 loop_counter += 1
-                alpha = random.uniform(0,1)
-                beta = random.uniform(0,1)
+                
+                # perform linear crossover on the left and right nodes to produce an offspring
                 offspring_left_node = ((alpha * genome1.genome[i].value[0]) + (beta * genome2.genome[i].value[0]))/(alpha + beta)
-                                    
                 offspring_right_node = ((alpha * genome1.genome[i].value[1]) + (beta * genome2.genome[i].value[1]))/(alpha + beta)
-                                    
+                
+                # check for break condition
                 if offspring_left_node < offspring_right_node:
                     break
                 
@@ -205,7 +239,6 @@ def linear(genome1:Genome, genome2:Genome) -> Genome:
                         offspring_right_node = genome2.genome[i].value[1]
                     break
                         
-    
             # instantiate the offspring gene
             offspring_gene = Gene(name = genome1.genome[i].name,
                                     lower_bound = genome1.genome[i].lower_bound,
@@ -222,24 +255,27 @@ def linear(genome1:Genome, genome2:Genome) -> Genome:
             assert genome1.genome[i].name == genome2.genome[i].name, "The name genes of the genome should be the same"
             assert genome1.genome[i].type == genome2.genome[i].type, "The type genes of the genome should be the same"  
             
-            # loop until offspring left node is less than the offspring right node
+            # initialize the left, middle, and right node values of the offspring
             offspring_left_node = 0
             offspring_middle_node = 0
             offspring_right_node = 0
+            
+            # initialize loop counter
             loop_counter = 0
+            
+            # loop until the condition left_node < middle_node < right_node is met
             while True:
+                # increase loop counter
                 loop_counter += 1
-                alpha = random.uniform(0,1)
-                beta = random.uniform(0,1)
+
+                # perform linear crossover on the left, middle, and right nodes
                 offspring_left_node = ((alpha * genome1.genome[i].value[0]) + (beta * genome2.genome[i].value[0]))/(alpha + beta)
-                                    
                 offspring_middle_node = ((alpha * genome1.genome[i].value[1]) + (beta * genome2.genome[i].value[1]))/(alpha + beta)
-                                        
                 offspring_right_node = ((alpha * genome1.genome[i].value[2]) + (beta * genome2.genome[i].value[2]))/(alpha + beta)
                 
-                condition1 = offspring_left_node < offspring_middle_node
-                condition2 = offspring_middle_node < offspring_right_node
-                if condition1 and condition2:
+                # check for break condition
+                condition = (offspring_left_node < offspring_middle_node) and (offspring_middle_node < offspring_right_node)
+                if condition:
                     break
                 
                 # if while loop takes to long, degenerate into uniform crossover
@@ -276,10 +312,11 @@ def linear(genome1:Genome, genome2:Genome) -> Genome:
             assert genome1.genome[i].name == genome2.genome[i].name, "The name genes of the genome should be the same"
             assert genome1.genome[i].type == genome2.genome[i].type, "The type genes of the genome should be the same"  
             
-            
             # loop until offspring left node is less than the offspring right node
             offspring_left_node = 0
             offspring_right_node = 0
+            
+            
             loop_counter = 0
             while True:
                 loop_counter += 1
