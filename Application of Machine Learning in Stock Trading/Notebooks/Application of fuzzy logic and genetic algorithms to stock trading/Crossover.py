@@ -315,9 +315,11 @@ def linear(genome1:Genome, genome2:Genome) -> Genome:
             offspring.append(copy.deepcopy(offspring_gene))
             continue
     
-    offspring = Genome(offspring)
-    offspring.mutate()
-    return offspring
+    offspring1 = Genome(offspring)
+    offspring2 = Genome(offspring)
+    offspring1.mutate()
+    offspring2.mutate()
+    return offspring1, offspring2
     
 def SBX(genome1:Genome, genome2:Genome) -> (Genome, Genome):
     """

@@ -206,7 +206,7 @@ def _isvalid_genome(genome:Genome) -> bool:
     """
     pass
 
-def _test_fitness(series:pd.DataFrame, genome:Genome) -> list[Union[int, float]]:
+def test_fitness(series:pd.DataFrame, genome:Genome) -> list[Union[int, float]]:
     """
     This function evaluates the fitness of the genome
     
