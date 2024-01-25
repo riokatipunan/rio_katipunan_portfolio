@@ -68,6 +68,7 @@ class Gene():
                 the instance of the class
         
         Returns:
+            None
         """
         probability_of_mutation = random.uniform(0,1)
         if probability_of_mutation <=  mutation_rate:
