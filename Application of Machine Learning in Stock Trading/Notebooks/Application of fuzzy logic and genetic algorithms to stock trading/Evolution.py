@@ -55,6 +55,7 @@ def run(train_set:list[pd.DataFrame], base_genome:Genome, seed_genome:Genome, fi
             new_population = crossover(population=new_population)
         
         population = new_population
+        
         print(average_fitness)
         
         # set checkpoints in the evolution

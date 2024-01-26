@@ -316,15 +316,19 @@ def linear(genome1:Genome, genome2:Genome) -> Genome:
             offspring_left_node = 0
             offspring_right_node = 0
             
-            
+            # initialize loop counter
             loop_counter = 0
+
+            # # loop until the condition left_node < right_node is met
             while True:
+                # increase loop counter
                 loop_counter += 1
-                alpha = random.uniform(0,1)
-                beta = random.uniform(0,1)
+
+                # perform linear crossover on the left and right nodes
                 offspring_left_node = ((alpha * genome1.genome[i].value[0]) + (beta * genome2.genome[i].value[0]))/(alpha + beta)      
                 offspring_right_node = ((alpha * genome1.genome[i].value[1]) + (beta * genome2.genome[i].value[1]))/(alpha + beta)
                 
+                # check for break condition
                 if offspring_left_node < offspring_right_node:
                     break
                 
@@ -352,10 +356,14 @@ def linear(genome1:Genome, genome2:Genome) -> Genome:
             offspring.append(copy.deepcopy(offspring_gene))
             continue
     
+    # instantiate the offsprings as a genome object
     offspring1 = Genome(offspring)
     offspring2 = Genome(offspring)
+
+    # mutate the offsprings
     offspring1.mutate()
     offspring2.mutate()
+
     return offspring1, offspring2
     
 def SBX(genome1:Genome, genome2:Genome) -> (Genome, Genome):
@@ -367,27 +375,36 @@ def SBX(genome1:Genome, genome2:Genome) -> (Genome, Genome):
     
     Arguments:
         genome1: Genome
-            a genome object to be crossed over to gene2
+            a genome object to be crossed over to genome2
         
         genome2: Genome
-            a genome object to be crossed over to gene 1
+            a genome object to be crossed over to genome1
             
     Returns:
         offspring: Genome
-            the offspring due to the crossover of gene1 and gene2;
+            the offspring due to the crossover of genome1 and genome2;
     """
+
+    # initialize the offsprings as list
     offspring1 = list()
     offspring2 = list()
     
+    # loop through each gene in the genome of the parents
     for i in range(len(genome1.genome)):
         if genome1.genome[i].type is "int":
             # check that both genes are the same in terms of type and name
             assert genome1.genome[i].name == genome2.genome[i].name, "The name genes of the genome should be the same"
             assert genome1.genome[i].type == genome2.genome[i].type, "The type genes of the genome should be the same"
             
+            # initialize loop counter
             loop_counter = 0
+
+            # loop until break condition is met
             while True:
+                # increase loop counter
                 loop_counter += 1
+
+                # initialize SBX factors
                 u = random.uniform(0,1)
                 n = random.choice([2,3,4,5])
                 if u <= 0.5:
@@ -742,16 +759,24 @@ def SBX(genome1:Genome, genome2:Genome) -> (Genome, Genome):
 
 def crossover(population:Population, num_crossover:int =  25) -> Population:
     """
-    
+    This function is a wrapper for all the crossover operators
+    as provided above.
+
+    Arguments:
+        population:Population
+            the population to be 
     """
     new_population = list()
     population_list = population.population
-    CROSSOVER_OPERATORS = ["single_point", "two_point", "uniform", "SBX"]
+    CROSSOVER_OPERATORS = ["single_point", "two_point", "uniform", "linear", "SBX"]
     
     for i in range(num_crossover):
+
+        # choose two random parents and let them perform crossover
         parent1_idx = random.randint(0, len(population.population)-1)
         parent2_idx = random.randint(0, len(population.population)-1)
         
+        # randomly choose a crossover operator
         crossover_type = random.choice(CROSSOVER_OPERATORS)
         
         if crossover_type == "single_point":
@@ -763,14 +788,16 @@ def crossover(population:Population, num_crossover:int =  25) -> Population:
         if crossover_type == "uniform":
             offspring1, offspring2 = uniform(population.population[parent1_idx], population.population[parent2_idx])
 
+        if crossover_type == "linear":
+            offspring1, offspring2 = linear(population.population[parent1_idx], population.population[parent2_idx])
+
         if crossover_type == "SBX":
             offspring1, offspring2 = SBX(population.population[parent1_idx], population.population[parent2_idx])
+
+        # extend the population list by appending the two new offsprings
+        population_list.extend([offspring1, offspring2])
     
-        new_population.append(offspring1)
-        new_population.append(offspring2)
-    
-    population_list.extend(new_population)
-    
+    # initialize the new population as a Population object
     new_population = Population(population_list)
     
     return new_population
