@@ -296,8 +296,6 @@ def max_drawdown_fitness(series:pd.DataFrame, genome:Genome):
     return 1-max_drawdown
     # return (stock, num_trades, bnh_returns, strat_returns, strat_sharpe_ratio, strat_sortino_ratio, max_drawdown)
 
-
-
 def evaluate_fitness(series:pd.DataFrame, genome:Genome) -> float:
     """
     This function evaluates the fitness of the genome
@@ -309,7 +307,6 @@ def evaluate_fitness(series:pd.DataFrame, genome:Genome) -> float:
     Returns:
         None:        
     """     
-
     # get the fuzzified technical indicators of a stock and its corresponding inference value z_sum
     stock = get_fuzzy_stock_df(series = series, genome = genome)
     # # stock.df['z_sum_ewm'] = stock.df['z_sum'].ewm(span=7).mean()
@@ -322,6 +319,10 @@ def evaluate_fitness(series:pd.DataFrame, genome:Genome) -> float:
     # axs[2].plot(stock.df['z_sum_rolling'].tail(450))
     # axs[3].plot(stock.df['z_sum_ewm'].tail(200))
     # plt.show()
+    
+    if stock is None:
+        fitness = float("-inf")
+        return fitness
 
     # initialize the following variables
     stock.df['trailingstop'] = 0.
@@ -401,10 +402,11 @@ def evaluate_fitness(series:pd.DataFrame, genome:Genome) -> float:
 
     elif strat_sortino_ratio > 0:
         # fitness = strat_sortino_ratio * (1/(1+num_trades)) * max_drawdown
-        fitness = strat_sortino_ratio * (1/(math.exp(num_trades)))* (1-max_drawdown)
+        fitness = strat_sortino_ratio * (1-max_drawdown)
     
     elif strat_sortino_ratio < 0:
-        fitness = strat_sortino_ratio * (math.exp(num_trades)) * max_drawdown
+        # fitness = strat_sortino_ratio * (num_trades) * max_drawdown
+        fitness = strat_sortino_ratio * max_drawdown
     # print(strat_sortino_ratio)
     # print(num_trades)
     # print(max_drawdown)
@@ -477,18 +479,6 @@ def sharpe_ratio(portfolio_returns:float ,std_portfolio_returns :float, risk_fre
     else:
         sharpe_ratio = (portfolio_returns-risk_free_rate_returns)/std_portfolio_returns
         return sharpe_ratio
-
-def _isvalid_genome(genome:Genome) -> bool:
-    """
-    This method checks if a genome is valid or not
-    
-    Arguments:
-        genome:Genome
-            the genome to be check if it is a valid genome or not
-    Returns
-        isvalid:bool
-    """
-    pass
 
 def test_fitness(series:pd.DataFrame, genome:Genome) -> list[Union[int, float]]:
     """
@@ -609,10 +599,12 @@ def test_fitness(series:pd.DataFrame, genome:Genome) -> list[Union[int, float]]:
         strat_sortino_ratio = float('-inf')
 
     if strat_sortino_ratio > 0:
-        fitness = strat_sortino_ratio * (1/(1+num_trades)) * (1-max_drawdown)
+        # fitness = strat_sortino_ratio * (1/(1+num_trades)) * (1-max_drawdown)
+        fitness = strat_sortino_ratio  * (1-max_drawdown)
     
     else:
-        fitness = strat_sortino_ratio * num_trades * max_drawdown
+        # fitness = strat_sortino_ratio * num_trades * max_drawdown
+        fitness = strat_sortino_ratio * max_drawdown
 
     
     # compute for the standard deviation of the strategy
@@ -629,7 +621,7 @@ def test_fitness(series:pd.DataFrame, genome:Genome) -> list[Union[int, float]]:
     # show the percent change of the returns for buy and hold vs fuzzy logic
     # print(stock.df['change'].cumprod()[-1], stock.df['returns'].cumprod()[-1])
     
-    return fitness
+    return fitness, num_trades
     # return (stock, num_trades, bnh_returns, strat_returns, strat_sharpe_ratio, strat_sortino_ratio, max_drawdown)
 
 def get_fuzzy_stock_df(series:pd.DataFrame, genome:Genome) -> pd.DataFrame:
@@ -664,7 +656,10 @@ def get_fuzzy_stock_df(series:pd.DataFrame, genome:Genome) -> pd.DataFrame:
     )
     
     # compute for the total value of z
-    stock.z_total()
+    try:
+        stock.z_total()
+    except:
+        return None    
     stock.df['z_sum_rolling']=stock.df['z_sum'].rolling(genome.genome_dict["z_rolling_window"].value).mean()
     
     return stock

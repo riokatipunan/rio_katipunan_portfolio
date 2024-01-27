@@ -93,5 +93,7 @@ def seed_genome() -> list[Gene]:
                         type = "int",
                         value = 30)
 
+                                      
                 ]
+    
     return seed_gene_list

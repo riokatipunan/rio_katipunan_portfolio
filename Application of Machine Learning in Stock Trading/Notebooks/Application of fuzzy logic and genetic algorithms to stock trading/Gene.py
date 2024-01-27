@@ -10,7 +10,20 @@ class Gene():
     """
     gene_id = itertools.count()
 
-    def __init__(self, name:str, lower_bound:Union[int, float], upper_bound:Union[int, float], type:str, value: Union[int, float] = None):
+    def __init__(self, 
+                 name:str, 
+                 lower_bound:Union[int, float], 
+                 upper_bound:Union[int, float], 
+                 type:str, value: Union[int, float] = None) -> None:
+        """
+        This function initializes the class
+        
+        Arguments:
+        
+        Returns:
+            None
+        """
+        
         self.gene_id = next(Gene.gene_id)
         self.name = name
         self.value = value
@@ -36,25 +49,25 @@ class Gene():
         
         elif self.type == "linear_membership":
             while True:
-                left_node = random.randint(self.lower_bound, self.upper_bound)
-                right_node = random.randint(left_node, self.upper_bound)
+                left_node = random.uniform(self.lower_bound, self.upper_bound)
+                right_node = random.uniform(left_node, self.upper_bound)
                 if left_node < right_node:
                     break
             self.value = [left_node, right_node]
         
         elif self.type == "triangular_membership":
             while True:
-                middle_node = random.randint(self.lower_bound, self.upper_bound)
-                left_node = random.randint(self.lower_bound, middle_node)
-                right_node = random.randint(middle_node, self.upper_bound)
+                middle_node = random.uniform(self.lower_bound, self.upper_bound)
+                left_node = random.uniform(self.lower_bound, middle_node)
+                right_node = random.uniform(middle_node, self.upper_bound)
                 if left_node < middle_node and middle_node < right_node:
                     break
             self.value = [left_node, middle_node, right_node]
 
         elif self.type == "entry_condition":
             while True:
-                short_condition = random.randint(self.lower_bound, self.upper_bound)
-                long_condition = random.randint(short_condition, self.upper_bound)
+                short_condition = random.uniform(self.lower_bound, self.upper_bound)
+                long_condition = random.uniform(short_condition, self.upper_bound)
                 if short_condition < long_condition:
                     break
             self.value = [short_condition, long_condition]
@@ -74,8 +87,6 @@ class Gene():
         if probability_of_mutation <=  mutation_rate:
             mutation_type_choices = ["uniform", "normal"]
             mutation_type = random.choice(mutation_type_choices)
-            # print(f"Gene {self.gene_id} with gene name: {self.name} is being mutated")
-            # print(f"Mutation type is {mutation_type}")
             if mutation_type is "uniform":
                 self.initialize_gene()
 
@@ -166,8 +177,6 @@ class Gene():
                         if loop_counter > 100:
                             self.initialize_gene()
                             break
-        else:
-            pass
 
     def __str__(self) -> str:
         """
@@ -181,7 +190,6 @@ class Gene():
             text:str
                 a text string containing some information on the instance of the class
         """
-
         text = str()
         text = text + f"Gene name: {self.name}\nValue: {self.value}\n\n"
         return text

@@ -20,6 +20,7 @@ class Population():
                 the instance of the class
                 
         Returns:
+            None
         """
         self.population_id = next(Population.population_id)
         if genome_list is not None and len(genome_list) > 0:
@@ -70,30 +71,6 @@ class Population():
             seed_genome_copy = Genome(seed_genome.genome)
             self.population.append(copy.deepcopy(seed_genome_copy))
 
-    def select_genes(self):
-        """
-        This function is the selection phase of the genetic algorithm
-        
-        Arguments:
-            population: list[gene]
-                a list of genes to be evaluated and selected for the next generation
-                
-        Returns
-            selected_population: list[gene]
-                a list of genes selected to proceed to the next generation
-        """
-        pass
-    
-    def _isvalid_genome(genome:Genome) -> bool:
-        """
-        This method checks if a genome is valid or not
-        
-        Arguments:
-            genome:Genome
-                the genome to be check if it is a valid genome or not
-        Returns
-            isvalid:bool
-        """
         
     def __len__(self) -> int:
         """
@@ -106,7 +83,6 @@ class Population():
             num_population:
                 the number of genomes in the population
         """
-        
         
         return len(self.population)
     

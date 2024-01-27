@@ -79,7 +79,6 @@ def base_genome() -> list[Gene]:
                         lower_bound = 1,
                         upper_bound = 300,
                         type = "int")
-
                 ]
     
     return gene_list

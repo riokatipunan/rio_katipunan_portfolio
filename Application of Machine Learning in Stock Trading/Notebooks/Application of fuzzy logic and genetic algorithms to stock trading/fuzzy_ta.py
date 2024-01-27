@@ -92,7 +92,22 @@ class fuzzy_TA:
         # if RSI is high then sell
         self.z[f'RSI{window}_hi'] = (p4 * ((self.u[f'RSI{window}_hi'] * -25) + 25))
         
-    def StochRSI(self, window:int = 14, smooth1:int = 3, smooth2:int = 3, fillna:bool = False, p0:float = 0, p1:float = 1) -> None:
+    def StochRSI(self, 
+                 window:int = 14, 
+                 smooth1:int = 3, 
+                 smooth2:int = 3, 
+                 fillna:bool = False, 
+                 p1:float = 1., 
+                 p2:float = 1.,
+                 p3:float = 1.,
+                 p4:float = 1.,
+                 StochRSI_low_left_node:float = 0.,
+                 StochRSI_low_right_node:float = 0.2,
+                 StochRSI_mid_left_node:float = 0.,
+                 StochRSI_mid_middle_node:float = 0.5,
+                 StochRSI_mid_right_node:float = 1.,
+                 StochRSI_high_left_node:float = 0.8,
+                 StochRSI_high_ride_node:float = 1.) -> None:
         """
         Stochastic RSI
         
@@ -134,24 +149,24 @@ class fuzzy_TA:
         )
 
         # calculate the membership values for low, medium and high RSI
-        self.u[f'StochRSI{window}_lo'] = self.df[f'StochRSI{window}'].apply(lambda x: linearf(x, [0, 0.2], positive_slope = False))
-        self.u[f'StochRSI{window}_md'] = self.df[f'StochRSI{window}'].apply(lambda x: trimf(x, [0, 0.5, 1])) 
-        self.u[f'StochRSI{window}_hi'] = self.df[f'StochRSI{window}'].apply(lambda x: linearf(x, [0.8, 1], positive_slope = True))
+        self.u[f'StochRSI{window}_lo'] = self.df[f'StochRSI{window}'].apply(lambda x: linearf(x, [StochRSI_low_left_node, StochRSI_low_right_node], positive_slope = False))
+        self.u[f'StochRSI{window}_md'] = self.df[f'StochRSI{window}'].apply(lambda x: trimf(x, [StochRSI_mid_left_node, StochRSI_mid_middle_node, StochRSI_mid_right_node])) 
+        self.u[f'StochRSI{window}_hi'] = self.df[f'StochRSI{window}'].apply(lambda x: linearf(x, [StochRSI_high_left_node, StochRSI_high_ride_node], positive_slope = True))
         
         # the following are the fuzzy rules for StochRSI
         # if StochRSI is low, then buy
-        self.z[f'StochRSI{window}_lo'] = p0 + (p1 * ((self.u[f'StochRSI{window}_lo'] * 25)  + 75))
+        self.z[f'StochRSI{window}_lo'] = (p1 * ((self.u[f'StochRSI{window}_lo'] * 25)  + 75))
         
         # if StochRSI is medium and StochRSI is less than 0.5, then buy
         mask = (self.df[f'StochRSI{window}'] < 0.5)
-        self.z.loc[mask, f'StochRSI{window}_md'] = p0 + (p1 * ((self.u[f'StochRSI{window}_md'] * -25) + 75))
+        self.z.loc[mask, f'StochRSI{window}_md'] = (p2 * ((self.u[f'StochRSI{window}_md'] * -25) + 75))
         
         # if StochRSI is medium and StochRSI is more than 0.5, then sell
         mask = (self.df[f'StochRSI{window}'] > 0.5)
-        self.z.loc[mask, f'StochRSI{window}_md'] = p0 + (p1 * ((self.u[f'StochRSI{window}_md'] * 25) + 25))
+        self.z.loc[mask, f'StochRSI{window}_md'] =  (p3 * ((self.u[f'StochRSI{window}_md'] * 25) + 25))
 
         # if StochRSI is high then sell
-        self.z[f'StochRSI{window}_hi'] = p0 + (p1 * ((self.u[f'StochRSI{window}_hi'] * -25) + 25))
+        self.z[f'StochRSI{window}_hi'] = (p4 * ((self.u[f'StochRSI{window}_hi'] * -25) + 25))
 
     def StochRSI_KxD(self, window:int = 14, smooth1:int = 1, smooth2:int = 3, fillna:bool = False, p0:float = 0, p1:float = 1) -> None:
         """
@@ -1104,7 +1119,6 @@ class fuzzy_TA:
         
         Returns:
         """
-        
         # add all u along axis 1 or the column
         self.u_sum['sum'] = self.u.sum(axis = 1)
         
@@ -1119,6 +1133,9 @@ class fuzzy_TA:
             # apply mask
             self.z.loc[mask, 'z_sum'] = self.z['z_sum'] + (self.z[f'{col_name}'] * self.u[f'{col_name}'])
         
-        # compute for the normalized z_sum by u_sum
-        self.df['z_sum'] = self.z['z_sum'] / self.u_sum['sum']
-    
+        try:
+            # compute for the normalized z_sum by u_sum
+            self.df['z_sum'] = self.z['z_sum'] / self.u_sum['sum']
+        except:
+            print('an error occured')
+            return None
