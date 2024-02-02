@@ -5,13 +5,14 @@ from fuzzy_membership_func import trimf, linearf
 
 # build a class that will encapsulate a stock and perform fuzzy technical analysis on it
 class fuzzy_TA:
-    def __init__(self, df: pd.DataFrame):
+    def __init__(self, df: pd.DataFrame) -> None:
         """
         Arguments:
             df: pd.DataFrame
                 pandas dataframe containing the closing, opening, high, low, and volume of a stock
                 
         Returns:
+            None
         """
         
         self.df = df

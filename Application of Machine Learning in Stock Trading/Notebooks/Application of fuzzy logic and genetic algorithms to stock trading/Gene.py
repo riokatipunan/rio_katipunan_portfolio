@@ -14,16 +14,31 @@ class Gene():
                  name:str, 
                  lower_bound:Union[int, float], 
                  upper_bound:Union[int, float], 
-                 type:str, value: Union[int, float] = None) -> None:
+                 type:str, 
+                 value: Union[int, float, list[int], list[float]] = None) -> None:
         """
         This function initializes the class
         
         Arguments:
-        
+            name:str
+                the name of the gene
+            
+            lower_bound:Union[int, float]
+                the lower bound of the gene
+                
+            upper_bound:Union[int, float]
+                the upper bound of the gene
+            
+            type:str
+                the type of gene
+            
+            value:Union[int, float]
+                the value of the gene
+    
         Returns:
             None
         """
-        
+        # construct gene
         self.gene_id = next(Gene.gene_id)
         self.name = name
         self.value = value
@@ -31,7 +46,7 @@ class Gene():
         self.upper_bound = upper_bound
         self.type = type
 
-    def initialize_gene(self):
+    def initialize_gene(self) -> None:
         """
         This function initializes the gene
         
@@ -39,8 +54,10 @@ class Gene():
             self
                 the instance of the class
         Returns:
+            None
         """
 
+        # 
         if self.type == "int":
             self.value = random.randint(self.lower_bound, self.upper_bound)
         
@@ -79,6 +96,9 @@ class Gene():
         Arguments:
             self
                 the instance of the class
+                
+            mutation_rate:float
+                the rate of mutation to used in the genes
         
         Returns:
             None
@@ -138,7 +158,6 @@ class Gene():
                             self.initialize_gene()
                             break
 
-                
                 elif self.type == "triangular_membership":
                     loop_counter = 0 
                     while True:

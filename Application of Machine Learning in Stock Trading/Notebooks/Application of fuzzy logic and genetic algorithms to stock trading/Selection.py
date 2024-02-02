@@ -2,7 +2,6 @@ import copy
 from multiprocessing import Pool, cpu_count
 import pandas as pd
 from Population import Population
-from functools import reduce
 import random
 
 def RWS(population: Population, fitness_func: callable, series: pd.DataFrame, num_population:int = 100, num_new_population = 50) -> Population:

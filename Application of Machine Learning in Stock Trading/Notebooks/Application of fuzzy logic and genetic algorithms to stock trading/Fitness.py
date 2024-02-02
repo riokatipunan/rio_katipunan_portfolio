@@ -357,7 +357,7 @@ def evaluate_fitness(series:pd.DataFrame, genome:Genome) -> float:
         condition1 = stock.df['z_sum_rolling'].iat[i] < genome.genome_dict["entry_condition"].value[0]
         condition2 = trailingstop < genome.genome_dict["stop_loss"].value
         condition3 = has_long_position is True
-        if( (condition1) or (condition2) ) and condition3:
+        if (condition1 or condition2) and condition3:
             stock.df['regime'].iat[i+1] = -1
             has_long_position = False
             sell_locator.append(stock.df.iloc[i])
