@@ -21,6 +21,6 @@ This repository also explored univariate and multivariate time-series forecastin
 ## [Application of Fuzzy Logic in Stock Trading](./Application%20of%20Machine%20Learning%20in%20Stock%20Trading/Notebooks/Application%20of%20fuzzy%20logic%20to%20stock%20trading/)
 This repository stores the notebooks that I have used in studying machine learning and applying these as a decision support system in stock trading. Currently, I have implemented it using fuzzy logic. 
 
-## [Application of Fuzzy Logic and Genetic Algorithm in Stock Trading](./Application%20of%20Machine%20Learning%20in%20Stock%20Trading/Notebooks/Application%20of%20Genetic%20Algorithm%20and%20Neural%20Networks%20in%20Stock%20Trading/)
+## [Application of Fuzzy Logic and Genetic Algorithm in Stock Trading](./Application%20of%20Machine%20Learning%20in%20Stock%20Trading/Notebooks/Application%20of%20fuzzy%20logic%20and%20genetic%20algorithms%20to%20stock%20trading/)
 This repository explores the application of fuzzy logic and genetic algorithm. This is a continuation of my exploration on the application of fuzzy logic in stock trading as provided in this [link](./Application%20of%20Machine%20Learning%20in%20Stock%20Trading/Notebooks/Application%20of%20fuzzy%20logic%20to%20stock%20trading/)
 
