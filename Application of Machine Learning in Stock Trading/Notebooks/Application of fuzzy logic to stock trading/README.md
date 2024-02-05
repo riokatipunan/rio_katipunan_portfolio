@@ -53,4 +53,4 @@ For example, for any given value of RSI (antecedent), its membership values is c
 
 If you find this interesting, please feel free to send me an email at riokatipunan@gmail.com.
 
-Thank you!
+Thank you.

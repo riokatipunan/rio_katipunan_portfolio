@@ -35,6 +35,3 @@ def split_train_set(series:pd.DataFrame, window:int = 500) -> list[pd.DataFrame]
     for i in range(len(series)-window):
         train_set.append(copy.deepcopy(series[i:i+window]))
     return train_set
-
-def plot_stock():
-    pass
