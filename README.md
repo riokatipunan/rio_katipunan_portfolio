@@ -18,5 +18,9 @@ The classical models studied in this repository are the holt-winters smoothing a
 
 This repository also explored univariate and multivariate time-series forecasting. 
 
-## Application of Machine Learning in Stock Trading
-This repository stores the notebooks that I have used in studying machine learning and applying these as a decision support system in stock trading. Currently, I have implemented it using fuzzy logic. I intend to explore other machine learning models such as neural networks, genetic algorithms, and reinforcement learning.
+## Application of Fuzzy Logic in Stock Trading
+This repository stores the notebooks that I have used in studying machine learning and applying these as a decision support system in stock trading. Currently, I have implemented it using fuzzy logic. 
+
+## Application of Fuzzy Logic and Genetic Algorithm in Stock Trading
+This repository explores the application of fuzzy logic and genetic algorithm. This is a continuation of my exploration on the application of fuzzy logic in stock trading as provided in this link
+
