@@ -2,7 +2,7 @@ from layer import Layer
 
 # inherit from base class Layer
 class ActivationLayer(Layer):
-    def __init__(self, activation, activation_prime):
+    def __init__(self, activation, activation_prime = None):
         self.activation = activation
         self.activation_prime = activation_prime
 
