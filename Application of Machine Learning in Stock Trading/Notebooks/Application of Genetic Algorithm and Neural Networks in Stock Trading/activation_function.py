@@ -13,3 +13,7 @@ def sigmoid(x):
 
 def sigmoid_derivative(a):
     return a * (1 - a)
+
+def soft_max(x):
+    e = np.exp(x)
+    return e / np.sum(e)
