@@ -1,4 +1,6 @@
-from layer import Layer
+from fc_layer import FCLayer
+from activation_layer import ActivationLayer
+from typing import Union
 
 class Network:
     def __init__(self):
@@ -7,11 +9,11 @@ class Network:
         self.loss_prime = None
 
     # add layer to network
-    def add(self, layer: Layer) -> None:
+    def add(self, layer: Union[FCLayer, ActivationLayer]) -> None:
         self.layers.append(layer)
 
     # set loss to use
-    def use(self, loss, loss_prime) -> None:
+    def use(self, loss: callable, loss_prime:callable) -> None:
         self.loss = loss
         self.loss_prime = loss_prime
 
