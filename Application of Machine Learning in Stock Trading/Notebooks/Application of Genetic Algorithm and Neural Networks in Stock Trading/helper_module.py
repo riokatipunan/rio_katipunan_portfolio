@@ -4,7 +4,7 @@ import pandas as pd
 from typing import Tuple
 
 # create a function that splits the data into train and test sets
-def split_train_test_sets(series: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+def split_train_test_sets(series: pd.Series) -> Tuple[pd.Series, pd.Series]:
     """
     This function splits the time series data into train and test sets
     
@@ -20,7 +20,7 @@ def split_train_test_sets(series: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFr
     train, test = series[1:-math.floor(len(series)*0.2)], series[-math.floor(len(series)*0.2):]
     return train, test
 
-def split_train_set(series:pd.DataFrame, window:int = 500) -> list[pd.DataFrame]:
+def split_train_set(series:pd.Series, window:int = 500) -> list[pd.Series]:
     """
     This function splits or slices the train set into batches with a corresponding window length
 

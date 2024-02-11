@@ -1,7 +1,8 @@
 import random
 import numpy as np
+from numpy.typing import NDArray
 from enum import Enum
-from typing import Tuple
+from typing import Tuple, Union
 import copy
 
 
@@ -13,7 +14,7 @@ class crossover_operator(Enum):
     SBX = 'SBX'
     
 # perform uniform crossover
-def crossover(flat_nn1: np.ndarray, flat_nn2: np.ndarray) -> Tuple[np.ndarray,np.ndarray]:
+def crossover(flat_nn1: NDArray, flat_nn2: NDArray) -> Tuple[NDArray, NDArray]:
     crossover_operators = [crossover_operator.uniform, 
                            crossover_operator.single_point,
                            crossover_operator.two_point,
@@ -42,7 +43,7 @@ def crossover(flat_nn1: np.ndarray, flat_nn2: np.ndarray) -> Tuple[np.ndarray,np
         case _:
             raise Exception('Not a valid crossover operator')
 
-def uniform_crossover(flat_nn1, flat_nn2) -> Tuple[np.ndarray, np.ndarray]:
+def uniform_crossover(flat_nn1, flat_nn2) -> Tuple[NDArray, NDArray]:
     offspring1 = list()
     offspring2 = list()
 
@@ -57,12 +58,16 @@ def uniform_crossover(flat_nn1, flat_nn2) -> Tuple[np.ndarray, np.ndarray]:
             offspring2.append(nn1_node)
     
     # instatiate the offsprings as numpy arrays
-    offspring1 = np.array(offspring1)
-    offspring2 = np.array(offspring2)
+    offspring1_ndarray = np.array(offspring1)
+    offspring2_ndarray = np.array(offspring2)
 
-    return offspring1, offspring2
+    # release some memory
+    del offspring1
+    del offspring2
 
-def single_point_crossover(flat_nn1, flat_nn2) -> Tuple[np.ndarray, np.ndarray]:
+    return offspring1_ndarray, offspring2_ndarray
+
+def single_point_crossover(flat_nn1, flat_nn2) -> Tuple[NDArray, NDArray]:
     # initialize the offspring
     offspring1 = list()
     offspring2 = list()
@@ -83,12 +88,16 @@ def single_point_crossover(flat_nn1, flat_nn2) -> Tuple[np.ndarray, np.ndarray]:
             offspring2.append(copy.deepcopy(flat_nn1[i]))
     
     # instatiate the offsprings as numpy arrays
-    offspring1 = np.array(offspring1)
-    offspring2 = np.array(offspring2)
-    
-    return offspring1, offspring2
+    offspring1_ndarray = np.array(offspring1)
+    offspring2_ndarray = np.array(offspring2)
 
-def two_point_crossover(flat_nn1, flat_nn2) -> Tuple[np.ndarray, np.ndarray]:
+    # release some memory
+    del offspring1
+    del offspring2
+
+    return offspring1_ndarray, offspring2_ndarray
+
+def two_point_crossover(flat_nn1, flat_nn2) -> Tuple[NDArray, NDArray]:
     # instantiate the offsprings as lists
     offspring1 = list()
     offspring2 = list()
@@ -119,12 +128,16 @@ def two_point_crossover(flat_nn1, flat_nn2) -> Tuple[np.ndarray, np.ndarray]:
             offspring2.append(copy.deepcopy(flat_nn2[i]))
     
     # instatiate the offsprings as numpy arrays
-    offspring1 = np.array(offspring1)
-    offspring2 = np.array(offspring2)
-    
-    return offspring1, offspring2
+    offspring1_ndarray = np.array(offspring1)
+    offspring2_ndarray = np.array(offspring2)
 
-def linear_crossover(flat_nn1, flat_nn2) -> Tuple[np.ndarray, np.ndarray]:
+    # release some memory
+    del offspring1
+    del offspring2
+
+    return offspring1_ndarray, offspring2_ndarray
+
+def linear_crossover(flat_nn1, flat_nn2) -> Tuple[NDArray, NDArray]:
     # instantiate the offspring as a list
     offspring1 = list()
     offspring2 = list()
@@ -147,12 +160,16 @@ def linear_crossover(flat_nn1, flat_nn2) -> Tuple[np.ndarray, np.ndarray]:
         offspring2.append(copy.deepcopy(offspring2_value))
 
     # instatiate the offsprings as numpy arrays
-    offspring1 = np.array(offspring1)
-    offspring2 = np.array(offspring2)
+    offspring1_ndarray = np.array(offspring1)
+    offspring2_ndarray = np.array(offspring2)
 
-    return offspring1, offspring2
+    # release some memory
+    del offspring1
+    del offspring2
 
-def SBX(flat_nn1, flat_nn2) -> Tuple[np.ndarray, np.ndarray]:
+    return offspring1_ndarray, offspring2_ndarray
+
+def SBX(flat_nn1, flat_nn2) -> Tuple[NDArray, NDArray]:
     # initialize the offsprings as list
     offspring1 = list()
     offspring2 = list()
@@ -181,7 +198,11 @@ def SBX(flat_nn1, flat_nn2) -> Tuple[np.ndarray, np.ndarray]:
         offspring2.append(copy.deepcopy(offspring2_value))
     
     # instatiate the offsprings as numpy arrays
-    offspring1 = np.array(offspring1)
-    offspring2 = np.array(offspring2)
+    offspring1_ndarray = np.array(offspring1)
+    offspring2_ndarray = np.array(offspring2)
     
-    return offspring1, offspring2
+    # release some memory
+    del offspring1
+    del offspring2
+
+    return offspring1_ndarray, offspring2_ndarray
