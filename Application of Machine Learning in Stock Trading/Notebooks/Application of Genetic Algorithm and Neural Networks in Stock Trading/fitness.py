@@ -124,8 +124,8 @@ def fitness(nn: Network, window, train_set: pd.Series, regime):
     # check if sortino ratio is negative or NaN;
     # if it is negative or NaN, or if the total number entry trades is 20
     # degenerate it into negative infinity
-    if np.isnan(strat_sortino_ratio) or num_trades > 20:
-        strat_sortino_ratio = float('-inf')
+    # if np.isnan(strat_sortino_ratio) or num_trades > 20:
+    #     strat_sortino_ratio = float('-inf')
 
     # if (strat_sortino_ratio == float('-inf')) and (max_drawdown == 0.):
     #     fitness = float("-inf")
@@ -149,21 +149,29 @@ class trading_action(Enum):
     Sell = 2
 
 def regime(features: NDArray, nn:Network):
-    probabilities = nn.predict(features)
+    # print(features)
+    probabilities = nn.predict(np.array([features]))
     index = np.argmax(probabilities)
-
+    # print(probabilities)
+    # print(index)
+    
     match index:
         case 0:
             return trading_action.Buy.value
+            # return probabilities[0]
         
         case 1:
             return trading_action.Hold.value
+            # return probabilities[1]
         
         case 2:
             return trading_action.Sell.value
+            # return probabilities[2]
 
         case _:
             pass
+
+
         
 def compute_population_fitness(population: MutableSequence[Network], fitness: Callable, regime: Callable, train_set: pd.Series ) -> MutableSequence[Network]:
     
@@ -183,3 +191,104 @@ def compute_population_fitness(population: MutableSequence[Network], fitness: Ca
         individual.fitness = fitness_value
     
     return population
+
+def test_fitness(nn: Network, window, train_set: pd.Series, regime):
+    fitness = 0
+    
+    # get the strategy regime
+    regime = partial(regime, nn = nn)
+    # regime_output = train_set.rolling(window = window).apply(regime, raw = True)
+    regime_output = train_set.rolling(window = window)
+    return regime_output
+    # print(regime_output)
+    # regime_series = pd.Series(data = regime_output, name = 'Regime')
+    # print(regime_series)
+
+    # series = pd.concat([train_set, regime_series], axis = 1)
+    # series['Returns'] = 1.
+    # has_long_position:bool = False
+    # num_trades:int = 0
+    
+    # # loop through all the elements in the series
+    # for i in range(len(series)):
+    #     print(series['Regime'].iat[i])
+    #     if (series['Regime'].iat[i] == trading_action.Buy.value) and (has_long_position == False):
+    #         has_long_position = True
+    #         num_trades += 1
+    #         series['Returns'].iat[i] = series['Close_pct_change'].iat[i]
+    #     elif (series['Regime'].iat[i] == trading_action.Sell.value) and (has_long_position == True):
+    #         has_long_position = False
+    #         series['Returns'].iat[i] = series['Close_pct_change'].iat[i]      
+    #     else:
+    #         pass
+        
+    #     # if (series['Regime'].iat[i] == trading_action.Buy.value):
+    #     #     has_long_position = True
+    #     #     num_trades += 1
+    #     #     series['Returns'].iat[i] = series['Close_pct_change'].iat[i]
+    #     # elif (series['Regime'].iat[i] == trading_action.Sell.value):
+    #     #     has_long_position = False
+    #     #     series['Returns'].iat[i] = series['Close_pct_change'].iat[i]      
+    #     # else:
+    #     #     pass
+
+
+    #     # match series['Regime'].iat[i]:
+    #     #     case trading_action.Buy.value:
+    #     #         has_long_position = True
+    #     #         num_trades += 1
+    #     #         series['Returns'].iat[i] = series['Close_pct_change'].iat[i]
+    #     #     case trading_action.Sell.value:
+    #     #         has_long_position = False
+    #     #         series['Returns'].iat[i] = series['Close_pct_change'].iat[i]
+    #     #     case trading_action.Hold.value:
+    #     #         series['Returns'].iat[i] = 1
+    #     #     case _:
+    #     #         pass
+        
+    #     # print(series['Returns'].iat[i], '\t', series['Regime'].iat[i], '\t', series['Close_pct_change'].iat[i])
+            
+    # # get returns for buy and hold strategy
+    # # bnh_returns = series['Close_pct_change'].cumprod().iat[-1]
+    # bnh_returns = series['Close_pct_change'].cumprod() - 1
+    # bnh_returns = bnh_returns.iat[-1] * 100
+    
+    # # get the returns of the strategy
+    # strat_returns = series['Returns'].cumprod() - 1 
+    # strat_returns = strat_returns.iat[-1] * 100
+
+    # # get the downside returns
+    # # and compute for the downside returns standard deviation
+    # downside_returns_series = series.loc[series['Returns'] < 1]
+    # downside_returns_std = downside_returns_series['Returns'].std()
+
+    # # compute for the sortino ration of the strategy
+    # strat_sortino_ratio = sortino_ratio(portfolio_returns = strat_returns, 
+    #                                     std_downside_portfolio_returns = downside_returns_std)
+    
+    # # compute for max drawdown
+    # s = series["Returns"].cumprod()
+    # # max_drawdown = np.ptp(series["Returns"].cumprod())/series["Returns"].cumprod().max()
+    # max_drawdown = np.ptp(s)/s.max()
+
+    # # check if sortino ratio is negative or NaN;
+    # # if it is negative or NaN, or if the total number entry trades is 20
+    # # degenerate it into negative infinity
+    # # if np.isnan(strat_sortino_ratio) or num_trades > 20:
+    # #     strat_sortino_ratio = float('-inf')
+
+    # # if (strat_sortino_ratio == float('-inf')) and (max_drawdown == 0.):
+    # #     fitness = float("-inf")
+
+    # # if strat_sortino_ratio > 0:
+    # #     # fitness = strat_sortino_ratio * (1/(1+num_trades)) * max_drawdown
+    # #     fitness = strat_sortino_ratio * (1-max_drawdown)
+    
+    # # elif strat_sortino_ratio < 0:
+    # #     # fitness = strat_sortino_ratio * (1/(1+num_trades)) * max_drawdown
+    # #     fitness = strat_sortino_ratio * max_drawdown
+    
+    # fitness = strat_sortino_ratio * (1/(1+num_trades)) * (1-max_drawdown)
+    
+    # # return fitness
+    # return fitness, bnh_returns, strat_returns, max_drawdown, series, strat_sortino_ratio
