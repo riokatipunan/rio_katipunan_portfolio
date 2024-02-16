@@ -1,8 +1,5 @@
 import numpy as np
-<<<<<<< HEAD
-=======
 from batch_norm import BatchNormLayer
->>>>>>> dac67c56 (updated file)
 from fc_layer import FCLayer
 from activation_layer import ActivationLayer
 from activation_function import tanh, soft_max

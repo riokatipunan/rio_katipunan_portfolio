@@ -7,15 +7,10 @@ class FCLayer(Layer):
     # input_size = number of input neurons
     # output_size = number of output neurons
     def __init__(self, input_size, output_size):
-<<<<<<< HEAD
-        self.weights = np.random.rand(input_size, output_size)
-        self.bias = np.random.rand(1, output_size)
-=======
         # self.weights = np.random.rand(input_size, output_size)
         # self.bias = np.random.rand(1, output_size)
         self.weights = np.random.uniform(-10,10, (input_size, output_size))
         self.bias = np.random.uniform(-10,10, (1, output_size))
->>>>>>> dac67c56 (updated file)
 
     # returns output for a given input
     def forward_propagation(self, input_data):
