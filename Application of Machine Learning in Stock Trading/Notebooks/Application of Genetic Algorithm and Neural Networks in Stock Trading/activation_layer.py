@@ -3,7 +3,11 @@ from typing import Any, Callable
 
 # inherit from base class Layer
 class ActivationLayer(Layer):
+<<<<<<< HEAD
     def __init__(self, activation: Callable, ):
+=======
+    def __init__(self, activation: Callable):
+>>>>>>> dac67c56 (updated file)
         self._activation = activation
 
     def set_activation(self, activation: Callable):

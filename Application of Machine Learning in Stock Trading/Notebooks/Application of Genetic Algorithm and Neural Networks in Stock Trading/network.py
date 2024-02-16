@@ -1,4 +1,8 @@
 import numpy as np
+<<<<<<< HEAD
+=======
+from batch_norm import BatchNormLayer
+>>>>>>> dac67c56 (updated file)
 from fc_layer import FCLayer
 from activation_layer import ActivationLayer
 from activation_function import tanh, soft_max
@@ -13,7 +17,7 @@ class Network:
         # self.loss_prime = None
 
     # add layer to network
-    def add(self, layer: Union[FCLayer, ActivationLayer]) -> None:
+    def add(self, layer: Union[FCLayer, ActivationLayer,BatchNormLayer]) -> None:
         self.layers.append(layer)
 
     # set loss to use
@@ -36,6 +40,16 @@ class Network:
             result.append(output)
 
         return result
+
+    # predict output for given input
+    def propagate_forward(self, input_data):
+        # run network over all samples
+        # forward propagation
+        output = input_data
+        for layer in self.layers:
+            output = layer.forward_propagation(output)
+        
+        return output
 
     # train the network
     def fit(self, x_train, y_train, epochs:int, learning_rate:float):

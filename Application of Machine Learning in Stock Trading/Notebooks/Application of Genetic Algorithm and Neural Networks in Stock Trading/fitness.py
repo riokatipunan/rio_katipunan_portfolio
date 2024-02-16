@@ -82,6 +82,7 @@ def fitness(nn: Network, window, train_set: pd.Series, regime):
             series['Returns'].iat[i] = series['Close_pct_change'].iat[i]      
         else:
             pass
+<<<<<<< HEAD
         
         # match series['Regime'].iat[i]:
         #     case trading_action.Buy.value:
@@ -98,6 +99,11 @@ def fitness(nn: Network, window, train_set: pd.Series, regime):
         
         # print(series['Returns'].iat[i], '\t', series['Regime'].iat[i], '\t', series['Close_pct_change'].iat[i])
             
+=======
+
+        # print(series['Returns'].iat[i], '\t', series['Regime'].iat[i], '\t', series['Close_pct_change'].iat[i])
+
+>>>>>>> dac67c56 (updated file)
     # get returns for buy and hold strategy
     # bnh_returns = series['Close_pct_change'].cumprod().iat[-1]
     bnh_returns = series['Close_pct_change'].cumprod() - 1
@@ -149,6 +155,7 @@ class trading_action(Enum):
     Sell = 2
 
 def regime(features: NDArray, nn:Network):
+<<<<<<< HEAD
     # print(features)
     probabilities = nn.predict(np.array([features]))
     index = np.argmax(probabilities)
@@ -167,6 +174,20 @@ def regime(features: NDArray, nn:Network):
         case 2:
             return trading_action.Sell.value
             # return probabilities[2]
+=======
+    probabilities = nn.propagate_forward(np.array([features]))
+    index = np.argmax(probabilities)
+
+    match index:
+        case 0:
+            return trading_action.Buy.value
+        
+        case 1:
+            return trading_action.Hold.value
+        
+        case 2:
+            return trading_action.Sell.value
+>>>>>>> dac67c56 (updated file)
 
         case _:
             pass
@@ -190,6 +211,7 @@ def compute_population_fitness(population: MutableSequence[Network], fitness: Ca
     for individual, fitness_value in zip(population, population_fitness):
         individual.fitness = fitness_value
     
+<<<<<<< HEAD
     return population
 
 def test_fitness(nn: Network, window, train_set: pd.Series, regime):
@@ -292,3 +314,6 @@ def test_fitness(nn: Network, window, train_set: pd.Series, regime):
     
     # # return fitness
     # return fitness, bnh_returns, strat_returns, max_drawdown, series, strat_sortino_ratio
+=======
+    return population
+>>>>>>> dac67c56 (updated file)
