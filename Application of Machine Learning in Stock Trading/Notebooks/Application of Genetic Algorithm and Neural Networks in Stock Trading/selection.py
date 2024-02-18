@@ -2,6 +2,7 @@ from typing import Iterable, Sequence, MutableSequence
 import math
 from network import Network
 import random
+import numpy as np
 
 # def keep_elites(percentage_elites:float, population: Iterable[Network]):    
 #     sorted_population = sorted(population, key=lambda x: x.fitness, reverse=False)
@@ -30,8 +31,12 @@ def keep_elites(percentage_elites: float, population: Sequence[Network]):
             a sequence of neural networks that are the elites in a population
     
     """
+    # population_wo_nan = list()
+    # for individual in population:
+    #     if ~math.isinf(individual.fitness) or ~np.isnan(individual.fitness):
+    #         population_wo_nan.append(individual)
     
-    sorted_population = sorted(population, key=lambda x: x.fitness, reverse=False)
+    sorted_population = sorted(population, key=lambda x: x.fitness, reverse=True)
     elite_population = sorted_population[:math.floor(percentage_elites * len(population))]
     
     return elite_population

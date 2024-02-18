@@ -10,6 +10,7 @@ class Network:
     def __init__(self):
         self.layers = []
         self.fitness = 0
+        self.cluster = 0
         # self.loss = None
         # self.loss_prime = None
 
