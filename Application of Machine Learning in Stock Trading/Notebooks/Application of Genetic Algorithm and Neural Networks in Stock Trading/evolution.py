@@ -45,13 +45,16 @@ def run_evolution(population: MutableSequence[Network],
         # append the average fitness in the history
         historical_average_fitness.append(average_fitness)
         
+        
+        # TODO transfer this to a separate function
         try:
             if len(historical_average_fitness) >=5:
                 mean_historical_average_fitness = mean(historical_average_fitness[-5::])
-                print(f'Mean historical average fitness: {mean_historical_average_fitness}')
+                print(f'Mean historical average fitness: {mean_historical_average_fitness:.2f}')
                 if average_fitness < mean_historical_average_fitness:
-                    mutation_rate += 0.05
-                    print(f'Mutation rate: {mutation_rate:.2f}')
+                    if mutation_rate <= 1:
+                        mutation_rate += 0.05
+                        print(f'Mutation rate: {mutation_rate:.2f}')
                 else:
                     if mutation_rate > 0.1:
                         mutation_rate -= 0.05
@@ -67,6 +70,9 @@ def run_evolution(population: MutableSequence[Network],
         
         # keep the elites in the population
         elites = keep_elites(percentage_elites = 0.1, population = population)
+
+        # adjust the fitness of the population based on the number of species
+        population = adjust_population_fitness(population)
 
         # select the NNs to keep
         selected = selection(population = population)

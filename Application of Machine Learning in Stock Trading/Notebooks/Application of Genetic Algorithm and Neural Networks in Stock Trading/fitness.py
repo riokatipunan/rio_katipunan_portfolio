@@ -121,20 +121,12 @@ def fitness(nn: Network, window, train_set: pd.Series, regime):
     s = series["Returns"].cumprod()
     # max_drawdown = np.ptp(series["Returns"].cumprod())/series["Returns"].cumprod().max()
     max_drawdown = np.ptp(s)/s.max()
-
-    # check if sortino ratio is negative or NaN;
-    # if it is negative or NaN, or if the total number entry trades is 20
-    # degenerate it into negative infinity
-    # if np.isnan(strat_sortino_ratio) or num_trades > 20 or max_drawdown > 0.5:
-    #     strat_sortino_ratio = float('-inf')
-        
+      
     # if np.isnan(strat_sortino_ratio):
     #     strat_sortino_ratio = float('-inf')        
         
     if np.isnan(strat_sortino_ratio):
-        strat_sortino_ratio = float('-inf')  
-        
-
+        fitness = float('-inf')  
 
     # if (strat_sortino_ratio == float('-inf')) and (max_drawdown == 0.):
     #     fitness = float("-inf")
@@ -150,7 +142,7 @@ def fitness(nn: Network, window, train_set: pd.Series, regime):
     #     # fitness = strat_sortino_ratio * (1/(1+num_trades)) * max_drawdown
     #     fitness = strat_sortino_ratio * max_drawdown
     
-    fitness = 0.001*strat_sortino_ratio + (num_trades) * (1-max_drawdown)
+    fitness = 0.01*strat_sortino_ratio + (num_trades) * (1-max_drawdown)
     # fitness = (0.001*strat_sortino_ratio + (1/(1+num_trades))) * (1-max_drawdown)
     # fitness = 0.01*strat_sortino_ratio * (1/(1+num_trades)) * (1-max_drawdown)
     # fitness = strat_sortino_ratio * (1/(1+num_trades)) * (1-max_drawdown)
@@ -160,6 +152,9 @@ def fitness(nn: Network, window, train_set: pd.Series, regime):
     
     if num_trades > 20:
         fitness = float('-inf')    
+        
+    if np.isnan(fitness):
+        fitness = float('-inf')  
     
     return fitness
     # return fitness, bnh_returns, strat_returns, max_drawdown, series, strat_sortino_ratio
@@ -203,7 +198,7 @@ def compute_population_fitness(population: MutableSequence[Network], fitness: Ca
     # assign the fitness values of the individuals in the population
     for individual, fitness_value in zip(population, population_fitness):
         individual.fitness = fitness_value
-      
+        # print(fitness_value)
     # clustered_population = cluster_population(population, eps = 0.2)  
       
     # print(len(clustered_population))
