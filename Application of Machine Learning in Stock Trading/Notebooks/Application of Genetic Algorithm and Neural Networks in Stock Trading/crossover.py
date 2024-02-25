@@ -2,7 +2,7 @@ import random
 import numpy as np
 from numpy.typing import NDArray
 from enum import Enum
-from typing import Tuple, Union
+from typing import Tuple
 import copy
 
 
@@ -24,6 +24,7 @@ def crossover(flat_nn1: NDArray, flat_nn2: NDArray) -> Tuple[NDArray, NDArray]:
     # randomly select a crossover operator
     crossover_type = random.choice(crossover_operators)
     
+    # match the crossover type
     match crossover_type:
         case crossover_operator.uniform:
             return uniform_crossover(flat_nn1=flat_nn1, flat_nn2=flat_nn2)
@@ -43,7 +44,22 @@ def crossover(flat_nn1: NDArray, flat_nn2: NDArray) -> Tuple[NDArray, NDArray]:
         case _:
             raise Exception('Not a valid crossover operator')
 
-def uniform_crossover(flat_nn1, flat_nn2) -> Tuple[NDArray, NDArray]:
+def uniform_crossover(flat_nn1:NDArray, flat_nn2:NDArray) -> Tuple[NDArray, NDArray]:
+    """
+    This function performs uniform crossover between two flat neural networks
+
+    Arguments:
+        flat_nn1:NDarray
+            the first parent
+        
+        flat_nn2:NDarray
+            the second parent
+    
+    Returns:
+        offspring1_ndarray, offspring2_ndarray: Tuple[NDArray, NDArray]
+            A tuple containing the offsprings of the parents
+    """
+
     offspring1 = list()
     offspring2 = list()
 
@@ -67,13 +83,25 @@ def uniform_crossover(flat_nn1, flat_nn2) -> Tuple[NDArray, NDArray]:
 
     return offspring1_ndarray, offspring2_ndarray
 
-def single_point_crossover(flat_nn1, flat_nn2) -> Tuple[NDArray, NDArray]:
+def single_point_crossover(flat_nn1:NDArray, flat_nn2:NDArray) -> Tuple[NDArray, NDArray]:
+    """
+    This function performs single point crossover between two flat neural networks
+
+    Arguments:
+        flat_nn1:NDarray
+            the first parent
+        
+        flat_nn2:NDarray
+            the second parent
+    
+    Returns:
+        offspring1_ndarray, offspring2_ndarray: Tuple[NDArray, NDArray]
+            A tuple containing the offsprings of the parents
+    """
+
     # initialize the offspring
     offspring1 = list()
     offspring2 = list()
-    
-    # assert that the length of the two NNs are the same
-    assert len(flat_nn1) == len(flat_nn2), 'The two neural networs should be the same length' 
     
     # identify the crossover point
     crossover_point = random.randint(1, len(flat_nn1)-1)
@@ -97,13 +125,25 @@ def single_point_crossover(flat_nn1, flat_nn2) -> Tuple[NDArray, NDArray]:
 
     return offspring1_ndarray, offspring2_ndarray
 
-def two_point_crossover(flat_nn1, flat_nn2) -> Tuple[NDArray, NDArray]:
+def two_point_crossover(flat_nn1:NDArray, flat_nn2:NDArray) -> Tuple[NDArray, NDArray]:
+    """
+    This function performs two-point crossover between two flat neural networks
+
+    Arguments:
+        flat_nn1:NDarray
+            the first parent
+        
+        flat_nn2:NDarray
+            the second parent
+    
+    Returns:
+        offspring1_ndarray, offspring2_ndarray: Tuple[NDArray, NDArray]
+            A tuple containing the offsprings of the parents
+    """
+
     # instantiate the offsprings as lists
     offspring1 = list()
     offspring2 = list()
-    
-    # assert that the length of the two NNs are the same
-    assert len(flat_nn1) == len(flat_nn2), 'The two neural networs should be the same length'    
     
     # identify the two crossoverpoints
     #  the code below checks and ensures that the first crossover point
@@ -137,13 +177,25 @@ def two_point_crossover(flat_nn1, flat_nn2) -> Tuple[NDArray, NDArray]:
 
     return offspring1_ndarray, offspring2_ndarray
 
-def linear_crossover(flat_nn1, flat_nn2) -> Tuple[NDArray, NDArray]:
+def linear_crossover(flat_nn1:NDArray, flat_nn2:NDArray) -> Tuple[NDArray, NDArray]:
+    """
+    This function performs linear crossover between two flat neural networks
+
+    Arguments:
+        flat_nn1:NDarray
+            the first parent
+        
+        flat_nn2:NDarray
+            the second parent
+    
+    Returns:
+        offspring1_ndarray, offspring2_ndarray: Tuple[NDArray, NDArray]
+            A tuple containing the offsprings of the parents
+    """
+
     # instantiate the offspring as a list
     offspring1 = list()
     offspring2 = list()
-    
-    # assert that the length of the two NNs are the same
-    assert len(flat_nn1) == len(flat_nn2), 'The two neural networs should be the same length'    
     
     # loop through the genome of the parents and do linear crossover
     for i in range(len(flat_nn1)):
@@ -169,7 +221,22 @@ def linear_crossover(flat_nn1, flat_nn2) -> Tuple[NDArray, NDArray]:
 
     return offspring1_ndarray, offspring2_ndarray
 
-def SBX(flat_nn1, flat_nn2) -> Tuple[NDArray, NDArray]:
+def SBX(flat_nn1:NDArray, flat_nn2:NDArray) -> Tuple[NDArray, NDArray]:
+    """
+    This function performs simulated binary crossover between two flat neural networks
+
+    Arguments:
+        flat_nn1:NDarray
+            the first parent
+        
+        flat_nn2:NDarray
+            the second parent
+    
+    Returns:
+        offspring1_ndarray, offspring2_ndarray: Tuple[NDArray, NDArray]
+            A tuple containing the offsprings of the parents
+    """
+
     # initialize the offsprings as list
     offspring1 = list()
     offspring2 = list()

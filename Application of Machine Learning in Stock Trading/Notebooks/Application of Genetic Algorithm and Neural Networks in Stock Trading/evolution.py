@@ -12,6 +12,7 @@ import pandas as pd
 
 
 def run_evolution(population: MutableSequence[Network], 
+                  window:int,
                   num_generations: int, 
                   train_set: List[pd.Series], 
                   checkpoint_filepath: str, 
@@ -29,6 +30,7 @@ def run_evolution(population: MutableSequence[Network],
         # compute the fitness of each NN
         # this returns a list of networks that has a correspinding fitness attribute
         population = compute_population_fitness(population = population,
+                                                window = window,
                                                 fitness = fitness,
                                                 regime = regime, 
                                                 train_set = train_sample)

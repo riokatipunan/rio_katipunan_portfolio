@@ -1,6 +1,8 @@
 from math import inf, isnan
+from numbers import Real
 from os import cpu_count
-from typing import Callable, MutableSequence
+from sys import int_info
+from typing import Callable, MutableSequence, Union
 import numpy as np
 import pandas as pd
 from enum import Enum
@@ -8,9 +10,6 @@ from numpy.typing import NDArray
 from network import Network
 from functools import partial
 from multiprocessing import Pool, cpu_count
-import math
-from statistics import mean
-from speciation import cluster, cluster_population
 
 def sortino_ratio(portfolio_returns:float ,std_downside_portfolio_returns:float, risk_free_rate_returns:float = 2.5) -> float:
     """
@@ -30,6 +29,7 @@ def sortino_ratio(portfolio_returns:float ,std_downside_portfolio_returns:float,
         sortino_ratio:float
             the sortino ratio of the strategy
     """
+
     if std_downside_portfolio_returns == 0:
         return float("-inf")
 
@@ -62,16 +62,51 @@ def sharpe_ratio(portfolio_returns:float ,std_portfolio_returns :float, risk_fre
         sharpe_ratio = (portfolio_returns-risk_free_rate_returns)/std_portfolio_returns
         return sharpe_ratio
 
-def fitness(nn: Network, window, train_set: pd.Series, regime):
-    fitness = 0
+def fitness(nn: Network, window:int, train_set: pd.Series, regime:Callable) -> float:
+    """
+    This function computes for the fitness of a neural network.
+
+    Arguments:
+        nn:Network
+            the neural network to be checked for its fitness
+
+        windo:int
+            the window to be used in checking the fitness of a neural network
+            this corresponds to the number of features in the neural network
+
+        train_set:pd.Series
+            the training set to be used in evaluating the fitness of a neural network
+        
+        regime:Callable
+            this is a function that predicts the regime or action to be taken
+            given the previous number of windows seen prior
+
+    Returns:
+        fitness:float
+            the fitness of the neural network
+    
+    """
+
+    # initialize the value for the fitness
+    fitness:float = 0.
     
     # get the strategy regime
+    # partially apply the neural network in the regime function
     regime = partial(regime, nn = nn)
-    regime_output = train_set.rolling(window=window).apply(regime, raw = True)
+
+    # apply the regime function to the training set
+    regime_output = train_set.rolling(window = window).apply(regime, raw = True)
+
+    # transform regime_output as a pandas Series
     regime_series = pd.Series(data = regime_output, name = 'Regime')
 
+    # concatenate the train_set pandas series with the regime_series pandas series
     series = pd.concat([train_set, regime_series], axis = 1)
+
+    # initialize a new column in the pandas dataframe with value 1.
     series['Returns'] = 1.
+
+    # initialize a few variables
     has_long_position:bool = False
     num_trades:int = 0
     
@@ -92,17 +127,18 @@ def fitness(nn: Network, window, train_set: pd.Series, regime):
         elif series['Regime'].iat[i] == trading_action.Buy.value and has_long_position == True:
             series['Regime'].iat[i] = trading_action.Hold.value
             series['Returns'].iat[i] = series['Close_pct_change'].iat[i]
-        # print(series['Returns'].iat[i], '\t', series['Regime'].iat[i], '\t', series['Close_pct_change'].iat[i])
+        elif series['Regime'].iat[i] == trading_action.Sell.value and has_long_position == False:
+            series['Regime'].iat[i] = trading_action.Hold.value
 
-    # compute for the cumulative retunrs
-    
+    # compute for the cumulative returns of the strategy
     series['Cumulative_Returns'] = series['Returns'] - 1
     series['Cumulative_Returns'] = series['Cumulative_Returns'].cumsum()
 
     # get returns for buy and hold strategy
+    # this is used in checking the performance of the strategy
     # bnh_returns = series['Close_pct_change'].cumprod().iat[-1]
-    bnh_returns = series['Close_pct_change'].cumprod() - 1
-    bnh_returns = bnh_returns.iat[-1] * 100
+    # bnh_returns = series['Close_pct_change'].cumprod() - 1
+    # bnh_returns = bnh_returns.iat[-1] * 100
     
     # get the returns of the strategy
     strat_returns = series['Returns'].cumprod() - 1 
@@ -119,29 +155,15 @@ def fitness(nn: Network, window, train_set: pd.Series, regime):
     
     # compute for max drawdown
     s = series["Returns"].cumprod()
-    # max_drawdown = np.ptp(series["Returns"].cumprod())/series["Returns"].cumprod().max()
     max_drawdown = np.ptp(s)/s.max()
-      
-    # if np.isnan(strat_sortino_ratio):
-    #     strat_sortino_ratio = float('-inf')        
+    # this is another way of computing the max drawdown of the strategy
+    # max_drawdown = np.ptp(series["Returns"].cumprod())/series["Returns"].cumprod().max()
         
     if np.isnan(strat_sortino_ratio):
-        fitness = float('-inf')  
-
-    # if (strat_sortino_ratio == float('-inf')) and (max_drawdown == 0.):
-    #     fitness = float("-inf")
+        fitness = float('-inf')
     
-    # if (strat_sortino_ratio == float('-inf')) and (max_drawdown == 0.):
-    #     fitness = float("-inf")    
-
-    # if strat_sortino_ratio > 0:
-    #     # fitness = strat_sortino_ratio * (1/(1+num_trades)) * max_drawdown
-    #     fitness = strat_sortino_ratio * (1-max_drawdown)
-    
-    # elif strat_sortino_ratio < 0:
-    #     # fitness = strat_sortino_ratio * (1/(1+num_trades)) * max_drawdown
-    #     fitness = strat_sortino_ratio * max_drawdown
-    
+    # the following are the different fitness functions 
+    # that I have experimented with this project.
     fitness = 0.01*strat_sortino_ratio + (num_trades) * (1-max_drawdown)
     # fitness = (0.001*strat_sortino_ratio + (1/(1+num_trades))) * (1-max_drawdown)
     # fitness = 0.01*strat_sortino_ratio * (1/(1+num_trades)) * (1-max_drawdown)
@@ -150,9 +172,13 @@ def fitness(nn: Network, window, train_set: pd.Series, regime):
     # fitness = (1-max_drawdown)
     # fitness = num_trades
     
+    # check if the strategy performs more than 20 trades
+    # if it is more than 20, return a fitness of -inf
     if num_trades > 20:
         fitness = float('-inf')    
-        
+    
+    # check if the computed fitness is NAN
+    # if it is NAN, return a fitness of -inf
     if np.isnan(fitness):
         fitness = float('-inf')  
     
@@ -164,8 +190,28 @@ class trading_action(Enum):
     Hold = 1
     Sell = 2
 
-def regime(features: NDArray, nn:Network):
+def regime(features:NDArray, nn:Network):
+    """
+    This function performs a forward propagation of a neural network given a set of feaures
+    The output of the forward propagation are the probabilties of taking a certain trading action
+    i.e. Buy, Hold, or Sell.
+
+    Arguments:
+        features:NDArray
+            the features or inputs to the neural network
+
+        nn:Network
+            the neural network to be tested
+
+    Returns:
+        this function returns an integer corresponding to a trading action
+        i.e. 0 is for Buy, 1 is for Hold, and 2 is for Sell
+    
+    """
+    # perform feed forward propagation
     probabilities = nn.propagate_forward(np.array([features]))
+
+    # perform argmax in the outputs
     index = np.argmax(probabilities)
 
     match index:
@@ -179,65 +225,97 @@ def regime(features: NDArray, nn:Network):
             return trading_action.Sell.value
         
         case _:
-            pass
+            raise Exception('Invalid index')
 
-def compute_population_fitness(population: MutableSequence[Network], fitness: Callable, regime: Callable, train_set: pd.Series ):
-    
-    # sequential processing of the fitness of a neural network
+def compute_population_fitness(population:MutableSequence[Network], window:int, fitness:Callable, regime:Callable, train_set:pd.Series) -> MutableSequence[Network]:
+    """
+    This function computes the fitness of a whole population
+
+    Arguments:
+        population:MutableSequence[Network]
+            the population whose fitness will be calculated
+
+        window:int
+            the window to be used in checking the fitness of a neural network
+            this corresponds to the number of features in the neural network
+
+        fitness:Callable
+            the fitness function to be used in checking the fitness of a
+            neural network
+        
+        regime:Callable
+            this is a function that predicts the regime or action to be taken
+            given the previous number of windows seen prior;
+            this is an input to the fitness function
+        
+        train_set:pd.Series
+            the training set to be used in evaluating the fitness of a neural network
+
+    Returns:
+        population:MutableSequence[Network]
+            the population with the computed fitness as part of their attribute
+    """
+
+    # compute for the fitness of the population using sequential processing 
+    # of the fitness of a neural network
+    # uncomment is this section for testing purposes
     # for individual in population:
-    #     individual.fitness = fitness(window = 150, 
+    #     individual.fitness = fitness(window = window, 
     #                                 train_set = train_set, 
     #                                 nn = individual,
     #                                 regime = regime)
         
-    # using multiprocessing
-    fitness = partial(fitness, window = 150, train_set = train_set, regime = regime)
+    # compute the fitness of the population using multiprocessing 
+    fitness = partial(fitness, window = window, train_set = train_set, regime = regime)
     pool = Pool(cpu_count())
     population_fitness = pool.map(fitness, population)
 
     # assign the fitness values of the individuals in the population
     for individual, fitness_value in zip(population, population_fitness):
         individual.fitness = fitness_value
-        # print(fitness_value)
-    # clustered_population = cluster_population(population, eps = 0.2)  
-      
-    # print(len(clustered_population))
-    # print(clustered_population)
-    # for specie in clustered_population:
-    #     num_indiv_in_specie = len(specie)
-    #     for individual in specie:
-    #         # adjust the fitness of the individual
-    #         individual.fitness = individual.fitness/num_indiv_in_specie
-    #         print(individual.cluster, individual.fitness)
-
-
 
     return population
 
-def compute_average_population_fitness(population):
+def compute_average_population_fitness(population:MutableSequence[Network]) -> float:
+    """
+    This function computes for the average fitness of a population
+    
+    Arguments:
+        population:MutableSequence[Network]
+            a list of neural networks
+
+    Returns:
+        average_fitness:float
+            the average fitness of the population
+    """
+
     # initialize some values
-    average_fitness = 0
+    average_fitness = 0.
+    total_fitness = 0.
     counter = 0
     
+    # compute for the average fitness
     for individual in population:
+        # check if the fitness of a neural network is -inf
+        # if it is not, add this to the total fitness
         if individual.fitness != float('-inf'):
-            average_fitness += individual.fitness
+            total_fitness += individual.fitness
             counter += 1            
 
     try:
-        average_fitness = average_fitness/counter
+        average_fitness = total_fitness/counter
     except ZeroDivisionError:
-        # if an error occors, assign a zero average fitness for the population
-        average_fitness = 0    
+        # if an error occurs, assign a zero average fitness for the population
+        # this usually happens of all neural networks in the population has a -inf fitness
+        average_fitness = 0
+
+    # release some memory
+    del total_fitness
 
     return average_fitness
 
-
-def compute_population_clusters():
-    pass
-
 def evaluate_nn(nn: Network, train_set, regime, window):
-    fitness = 0
+    fitness = 0.
     
     # get the strategy regime
     regime = partial(regime, nn = nn)
@@ -265,7 +343,10 @@ def evaluate_nn(nn: Network, train_set, regime, window):
             
         elif series['Regime'].iat[i] == trading_action.Buy.value and has_long_position == True:
             series['Regime'].iat[i] = trading_action.Hold.value
-            series['Returns'].iat[i] = series['Close_pct_change'].iat[i]  
+            series['Returns'].iat[i] = series['Close_pct_change'].iat[i]
+            
+        elif series['Regime'].iat[i] == trading_action.Sell.value and has_long_position == False:
+            series['Regime'].iat[i] = trading_action.Hold.value 
         
         # print(series['Returns'].iat[i], '\t', series['Regime'].iat[i], '\t', series['Close_pct_change'].iat[i])
 
@@ -316,5 +397,4 @@ def evaluate_nn(nn: Network, train_set, regime, window):
     # fitness = strat_sortino_ratio * (1/(1+num_trades)) * (1-max_drawdown)
     fitness = strat_sortino_ratio
     
-    # return fitness
     return fitness, bnh_returns, strat_returns, max_drawdown, series, strat_sortino_ratio, num_trades

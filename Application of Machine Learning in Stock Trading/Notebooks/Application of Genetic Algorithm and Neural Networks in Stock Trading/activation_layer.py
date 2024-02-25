@@ -1,5 +1,5 @@
 from layer import Layer
-from typing import Any, Callable
+from typing import Callable
 
 # inherit from base class Layer
 class ActivationLayer(Layer):
@@ -27,5 +27,5 @@ class ActivationLayer(Layer):
 
     # Returns input_error=dE/dX for a given output_error=dE/dY.
     # learning_rate is not used because there is no "learnable" parameters.
-    def backward_propagation(self, output_error, learning_rate):
-        return self._activation_prime(self.input) * output_error
+    # def backward_propagation(self, output_error, learning_rate):
+    #     return self._activation_prime(self.input) * output_error
