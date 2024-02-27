@@ -1,6 +1,7 @@
 import random
 import os
 from fitness import compute_average_population_fitness, fitness, compute_population_fitness, regime
+from mutation import hypermutate
 from network import Network
 from selection import keep_elites, selection
 from mate import reproduce_population, reduce_population
@@ -15,11 +16,13 @@ def run_evolution(population: MutableSequence[Network],
                   window:int,
                   num_generations: int, 
                   train_set: List[pd.Series], 
-                  checkpoint_filepath: str, 
-                  checkpoint_interval: int = 1, 
+                  checkpoint_filepath: str,
+                  checkpoint_interval: int = 1,
+                  mutation_rate:float = 0.1,
+                  enable_hypermutation:bool = False,
                   starting_generation:int = 0):
     
-    mutation_rate = 0.1
+    mutation_rate = mutation_rate
     historical_average_fitness = list()
     
     for _ in range(num_generations):
@@ -46,29 +49,10 @@ def run_evolution(population: MutableSequence[Network],
         
         # append the average fitness in the history
         historical_average_fitness.append(average_fitness)
-        
-        
-        # TODO transfer this to a separate function
-        try:
-            if len(historical_average_fitness) >=5:
-                mean_historical_average_fitness = mean(historical_average_fitness[-5::])
-                print(f'Mean historical average fitness: {mean_historical_average_fitness:.2f}')
-                if average_fitness < mean_historical_average_fitness:
-                    if mutation_rate <= 1:
-                        mutation_rate += 0.05
-                        print(f'Mutation rate: {mutation_rate:.2f}')
-                else:
-                    if mutation_rate > 0.1:
-                        mutation_rate -= 0.05
-                        print(f'Mutation rate: {mutation_rate:.2f}')
-                    else:
-                        mutation_rate = 0.1
-                        print(f'Mutation rate: {mutation_rate:.2f}')
-            else:
-                mutation_rate = 0.1
-                print(f'Mutation rate: {mutation_rate:.2f}')
-        except:
-            pass
+        mean_historical_average_fitness = mean(historical_average_fitness[-5::])
+
+        if enable_hypermutation:
+            mutation_rate = hypermutate(mutation_rate, average_fitness, mean_historical_average_fitness)
         
         # keep the elites in the population
         elites = keep_elites(percentage_elites = 0.1, population = population)

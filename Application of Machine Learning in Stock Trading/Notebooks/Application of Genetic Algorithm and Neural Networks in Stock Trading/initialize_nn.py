@@ -23,23 +23,16 @@ def initialize_nn() -> Network:
     net.add(FCLayer(150, 100))
     net.add(ActivationLayer(swish))
     net.add(BatchNormLayer())
-    net.add(FCLayer(100, 75))
+    net.add(FCLayer(100, 50))
     net.add(ActivationLayer(swish))
     net.add(BatchNormLayer())    
-    net.add(FCLayer(75, 50))
-    net.add(ActivationLayer(swish))
-    net.add(BatchNormLayer())
-    net.add(FCLayer(50, 50))
-    net.add(ActivationLayer(swish))
-    net.add(BatchNormLayer())    
-    net.add(FCLayer(50, 50))
-    net.add(ActivationLayer(swish))
-    net.add(BatchNormLayer())
     net.add(FCLayer(50, 25))
     net.add(ActivationLayer(swish))
-    net.add(BatchNormLayer())      
+    net.add(BatchNormLayer())
     net.add(FCLayer(25, 3))
     net.add(ActivationLayer(soft_max))
+
+
 
     return net
 
