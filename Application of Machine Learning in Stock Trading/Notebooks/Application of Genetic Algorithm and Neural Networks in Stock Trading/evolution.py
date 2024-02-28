@@ -20,6 +20,7 @@ def run_evolution(population: MutableSequence[Network],
                   checkpoint_interval: int = 1,
                   mutation_rate:float = 0.1,
                   enable_hypermutation:bool = False,
+                  dropout_rate:float = 0.1,
                   starting_generation:int = 0):
     
     mutation_rate = mutation_rate
@@ -38,20 +39,18 @@ def run_evolution(population: MutableSequence[Network],
                                                 regime = regime, 
                                                 train_set = train_sample)
         
-    
-        # adjust the fitness of the population based on the number of species
-        population = adjust_population_fitness(population)
-        
         # compute for the average fitness of the population
         average_fitness = compute_average_population_fitness(population)
         
-        print(f'Generation: {_+starting_generation} -> {average_fitness:.2f}')        
+        print(f'Generation: {_+starting_generation} -> {average_fitness:.2f}')
         
-        # append the average fitness in the history
-        historical_average_fitness.append(average_fitness)
-        mean_historical_average_fitness = mean(historical_average_fitness[-5::])
-
+        # if hypermutation is true, do the following
         if enable_hypermutation:
+            # append the average fitness in the history
+            historical_average_fitness.append(average_fitness)
+            mean_historical_average_fitness = mean(historical_average_fitness[-5::])
+
+            # perform hypermutation
             mutation_rate = hypermutate(mutation_rate, average_fitness, mean_historical_average_fitness)
         
         # keep the elites in the population
@@ -66,10 +65,10 @@ def run_evolution(population: MutableSequence[Network],
         # join the elites and selected NNs
         new_population = elites + selected
 
-        # mutation_rate = 1/(1 + num_generations)
-
         # reproduce the population
-        new_population = reproduce_population(population=new_population, mutation_rate = mutation_rate)
+        new_population = reproduce_population(population=new_population, 
+                                              mutation_rate = mutation_rate, 
+                                              dropout_rate = dropout_rate)
 
         # trim the population
         new_population = reduce_population(population=new_population, remove_percentage=0.17)
@@ -84,7 +83,5 @@ def run_evolution(population: MutableSequence[Network],
             
             # save to checkpoint
             checkpoint(population = population, generation_number = _+starting_generation, checkpoint_filepath = checkpoint_filepath)
-            
-        # print(f'Generation: {_+starting_generation} -> {average_fitness}')        
 
     return elites

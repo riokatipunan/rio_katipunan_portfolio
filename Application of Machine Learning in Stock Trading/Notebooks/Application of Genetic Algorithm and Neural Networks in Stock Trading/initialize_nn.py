@@ -32,8 +32,6 @@ def initialize_nn() -> Network:
     net.add(FCLayer(25, 3))
     net.add(ActivationLayer(soft_max))
 
-
-
     return net
 
 # def test_init_nn():
