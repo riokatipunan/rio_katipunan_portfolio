@@ -127,6 +127,7 @@ def fitness(nn: Network, window:int, train_set: pd.Series, regime:Callable) -> f
         elif series['Regime'].iat[i] == trading_action.Buy.value and has_long_position == True:
             series['Regime'].iat[i] = trading_action.Hold.value
             series['Returns'].iat[i] = series['Close_pct_change'].iat[i]
+        
         elif series['Regime'].iat[i] == trading_action.Sell.value and has_long_position == False:
             series['Regime'].iat[i] = trading_action.Hold.value
 
@@ -164,18 +165,19 @@ def fitness(nn: Network, window:int, train_set: pd.Series, regime:Callable) -> f
     
     # the following are the different fitness functions 
     # that I have experimented with this project.
-    fitness = 0.01*strat_sortino_ratio + (num_trades) * (1-max_drawdown)
+    # fitness = 0.01*strat_sortino_ratio + (num_trades)
+    # fitness = 0.01*strat_sortino_ratio + (num_trades) * (1-max_drawdown)
     # fitness = (0.001*strat_sortino_ratio + (1/(1+num_trades))) * (1-max_drawdown)
     # fitness = 0.01*strat_sortino_ratio * (1/(1+num_trades)) * (1-max_drawdown)
     # fitness = strat_sortino_ratio * (1/(1+num_trades)) * (1-max_drawdown)
-    # fitness  = strat_sortino_ratio
+    fitness  = strat_sortino_ratio
     # fitness = (1-max_drawdown)
     # fitness = num_trades
     
-    # check if the strategy performs more than 20 trades
-    # if it is more than 20, return a fitness of -inf
-    if num_trades > 20:
-        fitness = float('-inf')    
+    # check if the strategy performs more than 100 trades
+    # if it is more than 100, return a fitness of -inf
+    # if num_trades > 100:
+    #     fitness = float('-inf')    
     
     # check if the computed fitness is NAN
     # if it is NAN, return a fitness of -inf

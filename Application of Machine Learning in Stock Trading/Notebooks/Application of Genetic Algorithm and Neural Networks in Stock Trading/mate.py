@@ -34,8 +34,8 @@ def mate(nn1:Network, nn2:Network, mutation_rate = 0.1, dropout_rate = 0.1) -> T
     offspring2 = np.array([])
     
     # flatten the parent networks
-    flat_nn1, num_layers_1, nn_layer_dims_1 = flatten_NN(nn1)
-    flat_nn2, num_layers_2, nn_layer_dims_2 = flatten_NN(nn2)
+    flat_nn1, num_layers_1, nn_layer_dims_1, nn_activation_funcs_1 = flatten_NN(nn1)
+    flat_nn2, num_layers_2, nn_layer_dims_2, nn_activation_funcs_2 = flatten_NN(nn2)
 
     # perform crossover and mutation
     offspring1, offspring2 = crossover(flat_nn1 = flat_nn1, flat_nn2 = flat_nn2)
@@ -49,8 +49,8 @@ def mate(nn1:Network, nn2:Network, mutation_rate = 0.1, dropout_rate = 0.1) -> T
     offspring2 = dropout(flat_nn = offspring2, dropout_rate = dropout_rate)
 
     # reconstruct the neural network
-    offspring1_network = reconstruct_NN(offspring1, num_layers_1, nn_layer_dims_1)
-    offspring2_network = reconstruct_NN(offspring2, num_layers_2, nn_layer_dims_2)
+    offspring1_network = reconstruct_NN(offspring1, num_layers_1, nn_layer_dims_1, nn_activation_funcs_1)
+    offspring2_network = reconstruct_NN(offspring2, num_layers_2, nn_layer_dims_2, nn_activation_funcs_2)
     
     # release some memory
     del offspring1

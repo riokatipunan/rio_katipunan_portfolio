@@ -1,8 +1,9 @@
 from network import Network
 from fc_layer import FCLayer
 from activation_layer import ActivationLayer
-from activation_function import tanh, soft_max, sigmoid, swish
-from batch_norm import BatchNormLayer
+from activation_function import tanh, soft_max, sigmoid, swish, ActivationFunction
+from layer_norm import LayerNormLayer
+from typing import List, Tuple
 
 
 def initialize_nn() -> Network:
@@ -22,13 +23,13 @@ def initialize_nn() -> Network:
     net = Network()
     net.add(FCLayer(150, 100))
     net.add(ActivationLayer(swish))
-    net.add(BatchNormLayer())
+    net.add(LayerNormLayer())
     net.add(FCLayer(100, 50))
     net.add(ActivationLayer(swish))
-    net.add(BatchNormLayer())    
+    net.add(LayerNormLayer())    
     net.add(FCLayer(50, 25))
     net.add(ActivationLayer(swish))
-    net.add(BatchNormLayer())
+    net.add(LayerNormLayer())
     net.add(FCLayer(25, 3))
     net.add(ActivationLayer(soft_max))
 
@@ -43,3 +44,18 @@ def initialize_nn() -> Network:
 #     net.add(ActivationLayer(soft_max))
 
 #     return net
+
+def init_nn(nn_topology:List[Tuple[int, int, ActivationFunction, bool]]):
+    net = Network()
+    for layer in nn_topology:
+        (input_dim, output_dim, activation_function, enable_layernorm) = layer
+        net.add(FCLayer(input_dim, output_dim))
+        net.add(ActivationLayer(activation_function))
+        if enable_layernorm:
+            net.add(LayerNormLayer())
+
+    return net
+    
+        
+
+

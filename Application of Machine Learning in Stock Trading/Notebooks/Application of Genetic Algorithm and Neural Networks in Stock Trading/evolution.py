@@ -29,7 +29,7 @@ def run_evolution(population: MutableSequence[Network],
     for _ in range(num_generations):
         
         # get a random sample from the list of training sets
-        train_sample = random.choice(train_set)
+        # train_sample = random.choice(train_set)
         
         # compute the fitness of each NN
         # this returns a list of networks that has a correspinding fitness attribute
@@ -37,7 +37,7 @@ def run_evolution(population: MutableSequence[Network],
                                                 window = window,
                                                 fitness = fitness,
                                                 regime = regime, 
-                                                train_set = train_sample)
+                                                train_set = train_set)
         
         # compute for the average fitness of the population
         average_fitness = compute_average_population_fitness(population)

@@ -1,5 +1,6 @@
 import math    
 import numpy as np
+from enum import Enum
 
 # activation function and its derivative
 def tanh(x):
@@ -20,3 +21,9 @@ def soft_max(x):
 
 def swish(x):
     return x / (1 + math.e ** -x) 
+
+class ActivationFunction(Enum):
+    tanh = tanh
+    sigmoid = sigmoid
+    soft_max = soft_max
+    swish = swish
